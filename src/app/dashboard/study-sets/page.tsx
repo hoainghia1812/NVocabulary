@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -17,11 +17,7 @@ export default function StudySetsPage() {
   const [searchTerm, setSearchTerm] = useState('')
   const [error, setError] = useState('')
 
-  useEffect(() => {
-    loadVocabularySets()
-  }, [user])
-
-  const loadVocabularySets = async () => {
+  const loadVocabularySets = useCallback(async () => {
     if (!user) return
     
     try {
@@ -34,7 +30,11 @@ export default function StudySetsPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [user])
+
+  useEffect(() => {
+    loadVocabularySets()
+  }, [loadVocabularySets])
 
   const handleDelete = async (id: string) => {
     if (!confirm('Bạn có chắc chắn muốn xóa bộ từ vựng này?')) return

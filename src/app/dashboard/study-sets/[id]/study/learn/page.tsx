@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { useParams } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -56,45 +56,7 @@ export default function LearnPage() {
     spell2: { correct: 0, total: 0 }
   })
 
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        setLoading(true)
-        const [setData, itemsData] = await Promise.all([
-          getVocabularySet(setId),
-          getVocabularyItems(setId)
-        ])
-        setSet(setData)
-        setItems(itemsData)
-        
-        // Generate questions for first phase based on study mode
-        const initialPhase = studyMode === 'spell-only' ? 'spell1' : 'quiz1'
-        const firstQuestions = generateQuestionsForPhase(itemsData, initialPhase)
-        setQuestions(firstQuestions)
-        setCurrentPhase(initialPhase)
-      } catch (err) {
-        setError('Không thể tải dữ liệu học tập')
-        console.error(err)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    loadData()
-  }, [setId])
-
-  // Auto focus cho chính tả khi câu hỏi thay đổi
-  useEffect(() => {
-    const currentQ = questions[currentQuestionIndex]
-    if (currentQ?.type === 'spelling' && !showResult && spellInputRef.current) {
-      const timer = setTimeout(() => {
-        spellInputRef.current?.focus()
-      }, 100)
-      return () => clearTimeout(timer)
-    }
-  }, [questions, currentQuestionIndex, showResult])
-
-  const generateQuestionsForPhase = (items: VocabularyItem[], phase: StudyPhase): Question[] => {
+  const generateQuestionsForPhase = useCallback((items: VocabularyItem[], phase: StudyPhase): Question[] => {
     const questions: Question[] = []
     const totalItems = items.length
     const halfPoint = Math.ceil(totalItems / 2)
@@ -149,7 +111,45 @@ export default function LearnPage() {
     })
 
     return questions // Không random thứ tự câu hỏi
-  }
+  }, [studyMode]);
+
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        setLoading(true)
+        const [setData, itemsData] = await Promise.all([
+          getVocabularySet(setId),
+          getVocabularyItems(setId)
+        ])
+        setSet(setData)
+        setItems(itemsData)
+        
+        // Generate questions for first phase based on study mode
+        const initialPhase = studyMode === 'spell-only' ? 'spell1' : 'quiz1'
+        const firstQuestions = generateQuestionsForPhase(itemsData, initialPhase)
+        setQuestions(firstQuestions)
+        setCurrentPhase(initialPhase)
+      } catch (err) {
+        setError('Không thể tải dữ liệu học tập')
+        console.error(err)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    loadData()
+  }, [setId, generateQuestionsForPhase, studyMode])
+
+  // Auto focus cho chính tả khi câu hỏi thay đổi
+  useEffect(() => {
+    const currentQ = questions[currentQuestionIndex]
+    if (currentQ?.type === 'spelling' && !showResult && spellInputRef.current) {
+      const timer = setTimeout(() => {
+        spellInputRef.current?.focus()
+      }, 100)
+      return () => clearTimeout(timer)
+    }
+  }, [questions, currentQuestionIndex, showResult])
 
   const currentQuestion = questions[currentQuestionIndex]
 
@@ -477,7 +477,7 @@ export default function LearnPage() {
         spell2: { correct: 0, total: 0 }
       })
     }
-  }, [studyMode])
+  }, [studyMode, items, generateQuestionsForPhase])
 
 
 

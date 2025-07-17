@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { getVocabularyItems } from '@/lib/api/vocabulary';
@@ -23,10 +23,22 @@ export default function SpellPage() {
   const [error, setError] = useState('');
   const [correctCount, setCorrectCount] = useState(0);
   const [showConfetti, setShowConfetti] = useState(false);
-  const [attemptedWords, setAttemptedWords] = useState<Set<string>>(new Set());
   const [incorrectAttempts, setIncorrectAttempts] = useState(0);
 
-  const loadData = async () => {
+  const attemptedWordsRef = useRef(new Set<string>());
+
+  const getRandomWord = useCallback(() => {
+    const remainingWords = items.filter(item => !attemptedWordsRef.current.has(item.id));
+    if (remainingWords.length > 0) {
+      const randomIndex = Math.floor(Math.random() * remainingWords.length);
+      setCurrentWord(remainingWords[randomIndex]);
+      setUserInput('');
+    } else {
+      setShowConfetti(true);
+    }
+  }, [items]);
+
+  const loadData = useCallback(async () => {
     try {
       setLoading(true);
       const itemsData = await getVocabularyItems(setId);
@@ -38,25 +50,14 @@ export default function SpellPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [setId, getRandomWord]);
 
   useEffect(() => {
     loadData();
-  }, [setId]);
+  }, [loadData]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUserInput(e.target.value);
-  };
-
-  const getRandomWord = () => {
-    const remainingWords = items.filter(item => !attemptedWords.has(item.id));
-    if (remainingWords.length > 0) {
-      const randomIndex = Math.floor(Math.random() * remainingWords.length);
-      setCurrentWord(remainingWords[randomIndex]);
-      setUserInput('');
-    } else {
-      setShowConfetti(true);
-    }
   };
 
   const handleCheckSpelling = useCallback(() => {
@@ -64,7 +65,7 @@ export default function SpellPage() {
       toast.success('Chính xác!');
       setScore(prev => prev + 1);
       setCorrectCount(prev => prev + 1);
-      setAttemptedWords(prev => new Set(prev).add(currentWord.id));
+      attemptedWordsRef.current.add(currentWord.id);
       setIncorrectAttempts(0); // Reset incorrect attempts
       // Check if all words are completed
       if (correctCount + 1 === items.length) {
@@ -81,7 +82,7 @@ export default function SpellPage() {
         toast.error(`Sai rồi! Gợi ý: ${getHint(currentWord?.english || '')}`);
       }
     }
-  }, [currentWord, userInput, items, correctCount, attemptedWords, incorrectAttempts]);
+  }, [currentWord, userInput, items, correctCount, incorrectAttempts, getRandomWord]);
 
   const handleKeyPress = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
@@ -95,7 +96,7 @@ export default function SpellPage() {
   };
 
   const handleRestart = () => {
-    setAttemptedWords(new Set());
+    attemptedWordsRef.current = new Set();
     setCorrectCount(0);
     setScore(0);
     setShowConfetti(false);

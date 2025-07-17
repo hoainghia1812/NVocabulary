@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState, useRef } from "react"
+import { useEffect, useState, useRef, useCallback } from "react"
 import { getVocabularySets, getVocabularyItems } from '@/lib/api/vocabulary'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -52,7 +52,7 @@ export default function TypingPracticePage() {
     }
   }, [])
 
-  const playCurrentWord = () => {
+  const playCurrentWord = useCallback(() => {
     if (synth.current && utterance.current && !isMuted) {
       const currentWord = wordArray[currentIndex]
       if (currentWord) {
@@ -62,14 +62,14 @@ export default function TypingPracticePage() {
         utterance.current.onend = () => setIsPlaying(false)
       }
     }
-  }
+  }, [isMuted, wordArray, currentIndex])
 
   useEffect(() => {
     // Play word when it becomes current
     if (running && !finished && !isMuted) {
       playCurrentWord()
     }
-  }, [currentIndex, running, isMuted])
+  }, [currentIndex, running, isMuted, finished, playCurrentWord])
 
   useEffect(() => {
     // Ưu tiên lấy wordlist từ localStorage
@@ -107,7 +107,7 @@ export default function TypingPracticePage() {
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current)
     }
-  }, [running])
+  }, [running, timer])
 
   useEffect(() => {
     if (timer === 0) {

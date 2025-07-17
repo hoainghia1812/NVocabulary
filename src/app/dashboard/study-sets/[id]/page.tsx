@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -20,11 +20,7 @@ export default function StudySetDetailPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
-  useEffect(() => {
-    loadSetData()
-  }, [setId])
-
-  const loadSetData = async () => {
+  const loadSetData = useCallback(async () => {
     try {
       setLoading(true)
       const [setData, itemsData] = await Promise.all([
@@ -39,7 +35,11 @@ export default function StudySetDetailPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [setId])
+
+  useEffect(() => {
+    loadSetData()
+  }, [loadSetData])
 
   const handleDelete = async () => {
     if (!confirm('Bạn có chắc chắn muốn xóa bộ từ vựng này?')) return
