@@ -3,9 +3,10 @@
 import { ProtectedRoute } from '@/components/ProtectedRoute'
 import { useAuth } from '@/contexts/AuthContext'
 import { Button } from '@/components/ui/button'
-import { BookOpen, Home, Book, BarChart3, LogOut, Plus, Search, Bell, User, Menu, X } from 'lucide-react'
+import { BookOpen, Home, Book, BarChart3, LogOut, Search, Bell, User, Menu, X } from 'lucide-react'
 import { useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { useRouter, usePathname } from 'next/navigation'
 
 export default function DashboardLayout({
@@ -17,8 +18,6 @@ export default function DashboardLayout({
   const router = useRouter()
   const pathname = usePathname()
   const [sidebarOpen, setSidebarOpen] = useState(false)
-
-
 
   const handleSignOut = async () => {
     await signOut()
@@ -34,9 +33,9 @@ export default function DashboardLayout({
 
   return (
     <ProtectedRoute>
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-gradient-to-br from-sky-50 to-blue-50">
         {/* Top Navigation */}
-        <header className="bg-white border-b shadow-sm sticky top-0 z-50">
+        <header className="bg-white/90 backdrop-blur-md border-b border-sky-100 shadow-sm sticky top-0 z-50">
           <div className="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4">
             <div className="flex items-center space-x-2 sm:space-x-4">
               {/* Menu button - All devices */}
@@ -44,13 +43,13 @@ export default function DashboardLayout({
                 variant="ghost" 
                 size="icon" 
                 onClick={() => setSidebarOpen(!sidebarOpen)}
+                className="hover:bg-sky-50"
               >
                 {sidebarOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
               </Button>
               
-              <Link href="/dashboard" className="flex items-center space-x-2">
-                <BookOpen className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600" />
-                <span className="text-lg sm:text-xl font-bold text-gray-900">StudyN</span>
+              <Link href="/dashboard" className="flex items-center space-x-2 sm:space-x-3">
+                <Image src="/logo.png" alt="Logo NVocabulary" width={24} height={24} className="object-contain sm:w-8 sm:h-8" priority />
               </Link>
             </div>
             
@@ -60,18 +59,18 @@ export default function DashboardLayout({
                 <input
                   type="text"
                   placeholder="Tìm kiếm bộ từ vựng..."
-                  className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full pl-10 pr-4 py-2 border border-sky-200 rounded-lg bg-white/50 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500"
                 />
               </div>
             </div>
 
             <div className="flex items-center space-x-2 sm:space-x-4">
-              <Button variant="ghost" size="icon" className="hidden sm:flex">
+              <Button variant="ghost" size="icon" className="hidden sm:flex hover:bg-sky-50">
                 <Bell className="h-4 w-4 sm:h-5 sm:w-5" />
               </Button>
               <div className="flex items-center space-x-2">
-                <div className="w-6 h-6 sm:w-8 sm:h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                  <User className="h-3 w-3 sm:h-4 sm:w-4 text-blue-600" />
+                <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-r from-sky-100 to-cyan-100 rounded-full flex items-center justify-center">
+                  <User className="h-3 w-3 sm:h-4 sm:w-4 text-sky-600" />
                 </div>
                 <span className="text-sm font-medium text-gray-700 hidden sm:block">
                   {user?.email?.split('@')[0]}
@@ -93,7 +92,7 @@ export default function DashboardLayout({
           {/* Sidebar */}
           {true && (
             <aside className={`
-              fixed inset-y-0 left-0 z-50 w-64 bg-white border-r 
+              fixed inset-y-0 left-0 z-50 w-64 bg-white/95 backdrop-blur-md border-r border-sky-100
               transform transition-transform duration-300 ease-in-out
               ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
               top-[65px] sm:top-[73px]
@@ -102,7 +101,7 @@ export default function DashboardLayout({
             `}>
             <div className="h-full flex flex-col">
               {/* Scrollable Navigation */}
-              <nav className="p-4 sm:p-6 space-y-2 flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+              <nav className="p-4 sm:p-6 space-y-2 flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-sky-300 scrollbar-track-sky-100">
                 {navigation.map((item) => {
                   const isActive = pathname === item.href
                   return (
@@ -112,8 +111,8 @@ export default function DashboardLayout({
                       onClick={() => setSidebarOpen(false)}
                       className={`flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors ${
                         isActive
-                          ? 'bg-blue-50 text-blue-700'
-                          : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
+                          ? 'bg-gradient-to-r from-sky-50 to-cyan-50 text-sky-700 border border-sky-200'
+                          : 'text-gray-700 hover:bg-sky-50 hover:text-sky-700'
                       }`}
                     >
                       <item.icon className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0" />
@@ -122,10 +121,9 @@ export default function DashboardLayout({
                   )
                 })}
 
-                <div className="pt-3 sm:pt-4 border-t border-gray-200">
+                <div className="pt-3 sm:pt-4 border-t border-sky-200">
                   <Link href="/dashboard/study-sets/new" onClick={() => setSidebarOpen(false)}>
-                    <Button className="w-full justify-start text-sm sm:text-base">
-                      <Plus className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
+                    <Button className="w-full justify-center text-sm sm:text-base bg-gradient-to-r from-sky-500 to-cyan-500 text-white shadow-lg hover:shadow-cyan-500/50 transition-shadow">
                       Tạo bộ từ vựng mới
                     </Button>
                   </Link>
@@ -133,11 +131,11 @@ export default function DashboardLayout({
               </nav>
 
               {/* Fixed Bottom Section */}
-              <div className="p-4 sm:p-6 pt-0 border-t border-gray-200 bg-white">
+              <div className="p-4 sm:p-6 pt-0 border-t border-sky-200 bg-white/50 backdrop-blur-sm">
                 <Button
                   variant="ghost"
                   onClick={handleSignOut}
-                  className="w-full justify-start text-gray-600 hover:text-red-600 text-sm sm:text-base"
+                  className="w-full justify-start text-gray-600 hover:text-red-600 hover:bg-red-50 text-sm sm:text-base"
                 >
                   <LogOut className="mr-3 h-4 w-4 sm:h-5 sm:w-5" />
                   Đăng xuất
