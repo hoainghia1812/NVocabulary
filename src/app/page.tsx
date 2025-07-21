@@ -50,15 +50,15 @@ export default function Home() {
               Giới thiệu
             </a>
           </nav>
-          <div className="flex items-center space-x-4">
+                     <div className="flex items-center space-x-4">
             {/* Desktop buttons */}
             <div className="hidden md:flex items-center space-x-4">
-              <Link href="/login">
+            <Link href="/login">
                 <Button variant="ghost" className="hover:text-sky-700">Đăng nhập</Button>
-              </Link>
-              <Link href="/signup">
+            </Link>
+            <Link href="/signup">
                 <Button className="bg-gradient-to-r from-sky-500 to-cyan-500 text-white shadow-lg hover:shadow-cyan-500/50 transition-shadow">Bắt đầu</Button>
-              </Link>
+            </Link>
             </div>
             {/* Mobile button */}
             <div className="md:hidden">
@@ -69,7 +69,7 @@ export default function Home() {
                 Bắt đầu
               </Button>
             </div>
-          </div>
+           </div>
         </div>
       </header>
 
@@ -121,19 +121,19 @@ export default function Home() {
             Học thông minh với flashcards AI, lặp lại có khoảng cách và lộ trình học cá nhân hóa. 
             Tham gia cùng hàng nghìn học viên đang thành thạo từ vựng Anh-Việt.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                     <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             {/* Desktop buttons */}
             <div className="hidden md:flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Link href="/signup">
+            <Link href="/signup">
                 <Button size="lg" className="text-lg px-8 py-6 bg-gradient-to-r from-sky-500 to-cyan-500 text-white shadow-lg hover:shadow-cyan-500/50 transition-shadow">
-                  Bắt đầu học miễn phí
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
-              </Link>
-              <Button size="lg" variant="outline" className="text-lg px-8 py-6 border-sky-300 text-sky-700 hover:bg-sky-50">
-                <Play className="mr-2 h-5 w-5" />
-                Xem demo
+                Bắt đầu học miễn phí
+                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
+               </Link>
+              <Button size="lg" variant="outline" className="text-lg px-8 py-6 border-sky-300 text-sky-700 hover:bg-sky-50">
+               <Play className="mr-2 h-5 w-5" />
+              Xem demo
+             </Button>
             </div>
             {/* Mobile button */}
             <div className="md:hidden">
@@ -146,7 +146,7 @@ export default function Home() {
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </div>
-          </div>
+           </div>
           <div className="mt-12 flex items-center justify-center space-x-8 text-sm text-gray-500">
             <div className="flex items-center">
               <Star className="h-4 w-4 text-yellow-400 mr-1" />
@@ -267,19 +267,19 @@ export default function Home() {
           <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
             Tham gia cùng hàng nghìn học viên thành công và bắt đầu hành trình thành thạo từ vựng ngay hôm nay.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
             {/* Desktop buttons */}
             <div className="hidden md:flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/signup">
+            <Link href="/signup">
                 <Button size="lg" className="text-lg px-8 py-6 bg-gradient-to-r from-sky-500 to-cyan-500 text-white shadow-lg hover:shadow-cyan-500/50 transition-shadow">
-                  Bắt đầu học ngay
-                </Button>
-              </Link>
-              <Link href="/login">
+                Bắt đầu học ngay
+             </Button>
+            </Link>
+            <Link href="/login">
                 <Button size="lg" variant="outline" className="text-lg px-8 py-6 border-sky-300 text-sky-700 hover:bg-sky-50">
-                  Đã có tài khoản?
-                </Button>
-              </Link>
+                Đã có tài khoản?
+             </Button>
+            </Link>
             </div>
             {/* Mobile button */}
             <div className="md:hidden">
@@ -291,7 +291,7 @@ export default function Home() {
                 Bắt đầu học ngay
               </Button>
             </div>
-          </div>
+           </div>
         </div>
       </section>
 

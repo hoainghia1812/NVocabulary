@@ -207,43 +207,45 @@ export default function TypingPracticePage() {
   const accuracy = correctCount + wrongCount > 0 ? Math.round((correctCount / (correctCount + wrongCount)) * 100) : 0
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-2 sm:p-4 lg:p-6">
+    <div className="min-h-screen bg-gradient-to-br from-sky-50 via-cyan-50 to-blue-50 p-2 sm:p-4 lg:p-6">
       <div className="w-full max-w-6xl mx-auto pt-2 sm:pt-8">
         {/* Header */}
         <div className="text-center mb-3 sm:mb-6 lg:mb-8">
-          <h1 className="text-xl sm:text-3xl lg:text-4xl font-bold text-slate-800 mb-1 sm:mb-2">Typing Practice</h1>
-          <p className="text-xs sm:text-base text-slate-600 hidden sm:block">Master your typing skills with vocabulary words</p>
+          <h1 className="text-xl sm:text-3xl lg:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-sky-600 to-cyan-500 mb-1 sm:mb-2">
+            Luyện gõ từ vựng
+          </h1>
+          <p className="text-xs sm:text-base text-gray-600 hidden sm:block">Làm chủ kỹ năng đánh máy của bạn với các từ vựng</p>
         </div>
 
         {/* Stats Bar */}
         <div className="flex flex-row justify-center items-center gap-2 sm:gap-4 lg:gap-6 mb-3 sm:mb-6 lg:mb-8">
-          <div className="bg-white rounded-lg sm:rounded-2xl shadow-md px-3 sm:px-6 py-2 sm:py-4 text-center flex-1 sm:flex-none sm:min-w-[120px]">
-            <div className="text-lg sm:text-2xl font-bold text-blue-600">{wpm}</div>
-            <div className="text-xs sm:text-sm text-slate-600">WPM</div>
+          <div className="bg-white/80 backdrop-blur-sm border border-sky-100 rounded-lg sm:rounded-2xl shadow-lg px-3 sm:px-6 py-2 sm:py-4 text-center flex-1 sm:flex-none sm:min-w-[120px]">
+            <div className="text-lg sm:text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-sky-600 to-cyan-500">{wpm}</div>
+            <div className="text-xs sm:text-sm text-gray-600">WPM</div>
           </div>
-          <div className="bg-white rounded-lg sm:rounded-2xl shadow-md px-3 sm:px-6 py-2 sm:py-4 text-center flex-1 sm:flex-none sm:min-w-[120px]">
-            <div className="text-lg sm:text-2xl font-bold text-green-600">{accuracy}%</div>
-            <div className="text-xs sm:text-sm text-slate-600">Accuracy</div>
+          <div className="bg-white/80 backdrop-blur-sm border border-sky-100 rounded-lg sm:rounded-2xl shadow-lg px-3 sm:px-6 py-2 sm:py-4 text-center flex-1 sm:flex-none sm:min-w-[120px]">
+            <div className="text-lg sm:text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-green-500">{accuracy}%</div>
+            <div className="text-xs sm:text-sm text-gray-600">Accuracy</div>
           </div>
-          <div className="bg-white rounded-lg sm:rounded-2xl shadow-md px-3 sm:px-6 py-2 sm:py-4 text-center flex-1 sm:flex-none sm:min-w-[120px]">
-            <div className="text-lg sm:text-2xl font-bold text-slate-700">
+          <div className="bg-white/80 backdrop-blur-sm border border-sky-100 rounded-lg sm:rounded-2xl shadow-lg px-3 sm:px-6 py-2 sm:py-4 text-center flex-1 sm:flex-none sm:min-w-[120px]">
+            <div className="text-lg sm:text-2xl font-bold text-gray-700">
               {pad(Math.floor(timer / 60))}:{pad(timer % 60)}
             </div>
-            <div className="text-xs sm:text-sm text-slate-600">Time</div>
+            <div className="text-xs sm:text-sm text-gray-600">Time</div>
           </div>
-          <div className="bg-white rounded-lg sm:rounded-2xl shadow-md px-3 sm:px-6 py-2 sm:py-4 text-center flex-1 sm:flex-none sm:min-w-[120px]">
+          <div className="bg-white/80 backdrop-blur-sm border border-sky-100 rounded-lg sm:rounded-2xl shadow-lg px-3 sm:px-6 py-2 sm:py-4 text-center flex-1 sm:flex-none sm:min-w-[120px]">
             <Button 
               variant="ghost" 
               size="sm"
               onClick={() => setIsMuted(!isMuted)}
-              className="w-full h-full flex flex-col items-center justify-center"
+              className="w-full h-full flex flex-col items-center justify-center hover:bg-sky-50"
             >
               {isMuted ? (
-                <VolumeX className="h-4 w-4 sm:h-6 sm:w-6 text-slate-400" />
+                <VolumeX className="h-4 w-4 sm:h-6 sm:w-6 text-gray-400" />
               ) : (
-                <Volume2 className="h-4 w-4 sm:h-6 sm:w-6 text-blue-600" />
+                <Volume2 className="h-4 w-4 sm:h-6 sm:w-6 text-sky-600" />
               )}
-              <span className="text-xs sm:text-sm text-slate-600 mt-1">
+              <span className="text-xs sm:text-sm text-gray-600 mt-1">
                 {isMuted ? 'Unmute' : 'Mute'}
               </span>
             </Button>
@@ -251,13 +253,15 @@ export default function TypingPracticePage() {
         </div>
 
         {/* Main Typing Area */}
-        <div className="bg-white rounded-xl sm:rounded-3xl shadow-lg p-3 sm:p-6 lg:p-8 mb-3 sm:mb-6">
+        <div className="bg-white/80 backdrop-blur-sm border border-sky-100 rounded-xl sm:rounded-3xl shadow-lg p-3 sm:p-6 lg:p-8 mb-3 sm:mb-6">
           {/* Words Display */}
-          <div className="bg-slate-50 rounded-lg sm:rounded-2xl p-3 sm:p-6 lg:p-8 mb-3 sm:mb-6 min-h-[120px] sm:min-h-[200px] flex items-center justify-center">
+          <div className="bg-gradient-to-r from-sky-50 to-cyan-50 rounded-lg sm:rounded-2xl p-3 sm:p-6 lg:p-8 mb-3 sm:mb-6 min-h-[120px] sm:min-h-[200px] flex items-center justify-center border border-sky-100">
             {wordArray.length === 0 ? (
-              <div className="text-center text-slate-400 px-4">
-                <div className="text-lg sm:text-xl mb-2">No vocabulary words available</div>
-                <div className="text-xs sm:text-sm">Please add words in settings to start practicing</div>
+              <div className="text-center text-gray-400 px-4">
+                <div className="text-lg sm:text-xl mb-2 text-transparent bg-clip-text bg-gradient-to-r from-sky-600 to-cyan-500">
+                  Chưa có từ vựng
+                </div>
+                <div className="text-xs sm:text-sm">Vui lòng thêm từ vựng trong cài đặt để bắt đầu luyện tập</div>
               </div>
             ) : (
               <div className="w-full max-w-5xl">
@@ -275,23 +279,23 @@ export default function TypingPracticePage() {
                           
                           if (globalIdx < currentIndex) {
                             // Past words
-                            className += isIncorrect ? " bg-red-100 text-red-700" : " bg-green-100 text-green-700"
+                            className += isIncorrect ? " bg-red-100 text-red-700 border border-red-200" : " bg-emerald-100 text-emerald-700 border border-emerald-200"
                           } else if (globalIdx === currentIndex) {
                             // Current word
                             if (input.length > 0) {
                               if (input === word) {
-                                className += " bg-blue-200 text-blue-800 ring-2 ring-blue-400"
+                                className += " bg-sky-200 text-sky-800 ring-2 ring-sky-400 border border-sky-300"
                               } else if (!word.startsWith(input)) {
-                                className += " bg-red-200 text-red-700 ring-2 ring-red-400"
+                                className += " bg-red-200 text-red-700 ring-2 ring-red-400 border border-red-300"
                               } else {
-                                className += " bg-yellow-200 text-yellow-800 ring-2 ring-yellow-400"
+                                className += " bg-yellow-200 text-yellow-800 ring-2 ring-yellow-400 border border-yellow-300"
                               }
                             } else {
-                              className += " bg-yellow-200 text-yellow-800 ring-2 ring-yellow-400"
+                              className += " bg-yellow-200 text-yellow-800 ring-2 ring-yellow-400 border border-yellow-300"
                             }
                           } else {
                             // Future words
-                            className += " bg-white text-slate-600 border-2 border-slate-200"
+                            className += " bg-white text-gray-600 border-2 border-sky-200"
                           }
                           
                           return (
@@ -303,9 +307,9 @@ export default function TypingPracticePage() {
                                   size="sm"
                                   onClick={playCurrentWord}
                                   disabled={isPlaying}
-                                  className="absolute -top-2 -right-2 h-6 w-6 rounded-full bg-blue-100 hover:bg-blue-200 p-1"
+                                  className="absolute -top-2 -right-2 h-6 w-6 rounded-full bg-sky-100 hover:bg-sky-200 p-1 border border-sky-200"
                                 >
-                                  <Volume2 className="h-4 w-4 text-blue-600" />
+                                  <Volume2 className="h-4 w-4 text-sky-600" />
                                 </Button>
                               )}
                             </div>
@@ -324,8 +328,8 @@ export default function TypingPracticePage() {
             <div className="w-full">
               <Input
                 ref={inputRef}
-                className="text-base sm:text-xl lg:text-2xl p-2.5 sm:p-4 lg:p-6 bg-white rounded-lg sm:rounded-2xl border-2 border-slate-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all duration-200 w-full"
-                placeholder="Type the word..."
+                className="text-base sm:text-xl lg:text-2xl p-2.5 sm:p-4 lg:p-6 bg-white/50 rounded-lg sm:rounded-2xl border-2 border-sky-200 focus:border-sky-400 focus:ring-2 focus:ring-sky-100 transition-all duration-200 w-full"
+                placeholder="Gõ từ..."
                 value={input}
                 onChange={handleInputChange}
                 disabled={finished || !wordArray.length}
@@ -339,66 +343,70 @@ export default function TypingPracticePage() {
                 size="sm" 
                 variant={running ? "destructive" : "default"} 
                 onClick={running ? () => setRunning(false) : handleStart}
-                className="px-3 sm:px-6 py-2 sm:py-4 lg:py-6 rounded-lg sm:rounded-2xl flex-1 text-sm sm:text-base"
+                className={`px-3 sm:px-6 py-2 sm:py-4 lg:py-6 rounded-lg sm:rounded-2xl flex-1 text-sm sm:text-base ${
+                  !running ? 'bg-gradient-to-r from-sky-500 to-cyan-500 text-white shadow-lg hover:shadow-cyan-500/50 transition-shadow' : ''
+                }`}
                 disabled={!wordArray.length}
               >
                 {running ? <Pause className="h-4 w-4 sm:h-5 sm:w-5" /> : <Play className="h-4 w-4 sm:h-5 sm:w-5" />}
-                <span className="ml-1 sm:ml-2">{running ? 'Pause' : 'Start'}</span>
+                <span className="ml-1 sm:ml-2">{running ? 'Tạm dừng' : 'Bắt đầu'}</span>
               </Button>
               <Button 
                 size="sm" 
                 variant="outline" 
                 onClick={handleReset} 
-                className="px-3 sm:px-6 py-2 sm:py-4 lg:py-6 rounded-lg sm:rounded-2xl flex-1 text-sm sm:text-base"
+                className="px-3 sm:px-6 py-2 sm:py-4 lg:py-6 rounded-lg sm:rounded-2xl flex-1 text-sm sm:text-base border-sky-300 text-sky-700 hover:bg-sky-50"
               >
                 <RotateCcw className="h-4 w-4 sm:h-5 sm:w-5" />
-                <span className="ml-1 sm:ml-2">Reset</span>
+                <span className="ml-1 sm:ml-2">Làm lại</span>
               </Button>
               <Dialog open={settingsOpen} onOpenChange={setSettingsOpen}>
                 <DialogTrigger asChild>
-                  <Button size="sm" variant="outline" className="px-3 sm:px-6 py-2 sm:py-4 lg:py-6 rounded-lg sm:rounded-2xl flex-1 text-sm sm:text-base">
+                  <Button size="sm" variant="outline" className="px-3 sm:px-6 py-2 sm:py-4 lg:py-6 rounded-lg sm:rounded-2xl flex-1 text-sm sm:text-base border-sky-300 text-sky-700 hover:bg-sky-50">
                     <Settings className="h-4 w-4 sm:h-5 sm:w-5" />
-                    <span className="ml-1 sm:ml-2">Settings</span>
+                    <span className="ml-1 sm:ml-2">Cài đặt</span>
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="w-[95vw] max-w-md sm:max-w-lg mx-auto max-h-[90vh] overflow-y-auto">
+                <DialogContent className="w-[95vw] max-w-md sm:max-w-lg mx-auto max-h-[90vh] overflow-y-auto bg-white/95 backdrop-blur-sm border border-sky-100">
                   <DialogHeader className="pb-3 sm:pb-4">
-                    <DialogTitle className="text-lg sm:text-xl">Settings</DialogTitle>
-                    <DialogDescription className="text-sm sm:text-base">
-                      Customize your typing practice session
+                    <DialogTitle className="text-lg sm:text-xl text-transparent bg-clip-text bg-gradient-to-r from-sky-600 to-cyan-500">
+                      Cài đặt
+                    </DialogTitle>
+                    <DialogDescription className="text-sm sm:text-base text-gray-600">
+                      Tùy chỉnh phiên luyện tập của bạn
                     </DialogDescription>
                   </DialogHeader>
                   <div className="space-y-4 sm:space-y-6 px-1">
                     <div>
-                      <label className="block font-medium mb-1.5 sm:mb-2 text-slate-700 text-sm sm:text-base">
-                        Duration:
+                      <label className="block font-medium mb-1.5 sm:mb-2 text-gray-700 text-sm sm:text-base">
+                        Thời gian:
                       </label>
                       <select
-                        className="w-full border-2 border-slate-200 rounded-lg px-3 py-2 sm:py-2.5 focus:border-blue-400 focus:outline-none text-sm sm:text-base"
+                        className="w-full border-2 border-sky-200 rounded-lg px-3 py-2 sm:py-2.5 focus:border-sky-400 focus:outline-none text-sm sm:text-base bg-white/50"
                         value={duration}
                         onChange={e => setDuration(Number(e.target.value))}
                       >
-                        <option value={60}>1 minute</option>
-                        <option value={120}>2 minutes</option>
-                        <option value={180}>3 minutes</option>
-                        <option value={300}>5 minutes</option>
-                        <option value={600}>10 minutes</option>
-                        <option value={900}>15 minutes</option>
-                        <option value={1200}>20 minutes</option>
-                        <option value={1800}>30 minutes</option>
+                        <option value={60}>1 phút</option>
+                        <option value={120}>2 phút</option>
+                        <option value={180}>3 phút</option>
+                        <option value={300}>5 phút</option>
+                        <option value={600}>10 phút</option>
+                        <option value={900}>15 phút</option>
+                        <option value={1200}>20 phút</option>
+                        <option value={1800}>30 phút</option>
                       </select>
                     </div>
                     <div>
-                      <label className="block font-medium mb-1.5 sm:mb-2 text-slate-700 text-sm sm:text-base">
-                        Word List 
-                        <span className="text-xs sm:text-sm text-slate-500 block sm:inline">
-                          <span className="hidden sm:inline">(</span>separate by space or<span className="hidden sm:inline">)</span>
+                      <label className="block font-medium mb-1.5 sm:mb-2 text-gray-700 text-sm sm:text-base">
+                        Danh sách từ vựng
+                        <span className="text-xs sm:text-sm text-gray-500 block sm:inline">
+                          <span className="hidden sm:inline">(</span>nhập các từ bằng dấu cách hoặc<span className="hidden sm:inline">)</span>
                         </span>
                       </label>
                       <Textarea
                         value={wordlist}
                         onChange={e => setWordlist(e.target.value)}
-                        className="min-h-[80px] sm:min-h-[100px] border-2 border-slate-200 rounded-lg focus:border-blue-400 text-sm sm:text-base"
+                        className="min-h-[80px] sm:min-h-[100px] border-2 border-sky-200 rounded-lg focus:border-sky-400 text-sm sm:text-base bg-white/50"
                         placeholder="Enter vocabulary words..."
                         rows={4}
                       />
@@ -409,10 +417,10 @@ export default function TypingPracticePage() {
                         type="checkbox"
                         checked={randomize}
                         onChange={e => setRandomize(e.target.checked)}
-                        className="w-4 h-4 sm:w-4 sm:h-4 text-blue-600 rounded focus:ring-blue-500 mt-0.5 sm:mt-0 flex-shrink-0"
+                        className="w-4 h-4 sm:w-4 sm:h-4 text-sky-600 border-sky-300 rounded focus:ring-sky-500 mt-0.5 sm:mt-0 flex-shrink-0"
                       />
-                      <label htmlFor="randomize" className="font-medium text-slate-700 text-sm sm:text-base leading-tight">
-                        Randomize word order
+                      <label htmlFor="randomize" className="font-medium text-gray-700 text-sm sm:text-base leading-tight">
+                        Ngẫu nhiên các từ
                       </label>
                     </div>
                   </div>
@@ -420,9 +428,9 @@ export default function TypingPracticePage() {
                     <Button 
                       variant="outline" 
                       onClick={() => setSettingsOpen(false)}
-                      className="w-full sm:w-auto order-2 sm:order-1 text-sm sm:text-base"
+                      className="w-full sm:w-auto order-2 sm:order-1 text-sm sm:text-base border-sky-300 text-sky-700 hover:bg-sky-50"
                     >
-                      Cancel
+                      Hủy
                     </Button>
                     <Button 
                       onClick={() => {
@@ -440,9 +448,9 @@ export default function TypingPracticePage() {
                         setWordArray(arr)
                         setSettingsOpen(false)
                       }}
-                      className="w-full sm:w-auto order-1 sm:order-2 text-sm sm:text-base"
+                      className="w-full sm:w-auto order-1 sm:order-2 text-sm sm:text-base bg-gradient-to-r from-sky-500 to-cyan-500 text-white shadow-lg hover:shadow-cyan-500/50 transition-shadow"
                     >
-                      Apply Settings
+                      Áp dụng
                     </Button>
                   </DialogFooter>
                 </DialogContent>
@@ -453,35 +461,37 @@ export default function TypingPracticePage() {
 
         {/* Results */}
         {finished && (
-          <div className="bg-white rounded-xl sm:rounded-3xl shadow-lg p-3 sm:p-6 lg:p-8 text-center">
+          <div className="bg-white/80 backdrop-blur-sm border border-sky-100 rounded-xl sm:rounded-3xl shadow-lg p-3 sm:p-6 lg:p-8 text-center">
             <div className="mb-3 sm:mb-6">
-              <h2 className="text-xl sm:text-3xl font-bold text-slate-800 mb-2 sm:mb-4">Complete!</h2>
+              <h2 className="text-xl sm:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-sky-600 to-cyan-500 mb-2 sm:mb-4">
+                Hoàn thành!
+              </h2>
               <div className="grid grid-cols-3 sm:grid-cols-3 gap-2 sm:gap-6">
-                <div className="bg-green-50 rounded-lg sm:rounded-2xl p-2 sm:p-6">
-                  <div className="text-lg sm:text-3xl font-bold text-green-600 mb-1 sm:mb-2">{correctCount}</div>
-                  <div className="text-xs sm:text-base text-green-700">Correct</div>
+                <div className="bg-gradient-to-br from-emerald-50 to-green-50 border border-emerald-200 rounded-lg sm:rounded-2xl p-2 sm:p-6">
+                  <div className="text-lg sm:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-green-500 mb-1 sm:mb-2">{correctCount}</div>
+                  <div className="text-xs sm:text-base text-emerald-700">Đúng</div>
                 </div>
-                <div className="bg-red-50 rounded-lg sm:rounded-2xl p-2 sm:p-6">
-                  <div className="text-lg sm:text-3xl font-bold text-red-600 mb-1 sm:mb-2">{wrongCount}</div>
-                  <div className="text-xs sm:text-base text-red-700">Wrong</div>
+                <div className="bg-gradient-to-br from-red-50 to-rose-50 border border-red-200 rounded-lg sm:rounded-2xl p-2 sm:p-6">
+                  <div className="text-lg sm:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-rose-500 mb-1 sm:mb-2">{wrongCount}</div>
+                  <div className="text-xs sm:text-base text-red-700">Sai</div>
                 </div>
-                <div className="bg-blue-50 rounded-lg sm:rounded-2xl p-2 sm:p-6">
-                  <div className="text-lg sm:text-3xl font-bold text-blue-600 mb-1 sm:mb-2">{accuracy}%</div>
-                  <div className="text-xs sm:text-base text-blue-700">Accuracy</div>
+                <div className="bg-gradient-to-br from-sky-50 to-cyan-50 border border-sky-200 rounded-lg sm:rounded-2xl p-2 sm:p-6">
+                  <div className="text-lg sm:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-sky-600 to-cyan-500 mb-1 sm:mb-2">{accuracy}%</div>
+                  <div className="text-xs sm:text-base text-sky-700">Độ chính xác</div>
                 </div>
               </div>
             </div>
 
             {wrongWords.length > 0 && (
               <div className="mb-4 sm:mb-6">
-                <h3 className="text-lg sm:text-xl font-semibold text-slate-800 mb-2 sm:mb-4">Wrong Words</h3>
-                <div className="bg-red-50 rounded-lg sm:rounded-2xl p-3 sm:p-4">
+                <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mb-2 sm:mb-4">Từ sai</h3>
+                <div className="bg-gradient-to-r from-red-50 to-rose-50 border border-red-200 rounded-lg sm:rounded-2xl p-3 sm:p-4">
                   <div className="grid grid-cols-2 gap-2 text-sm sm:text-base">
                     {wrongWords.map((word, index) => (
-                      <div key={index} className="flex justify-between items-center bg-white rounded p-2">
-                        <span className="text-red-600">{word.typed}</span>
-                        <span className="text-slate-400">→</span>
-                        <span className="text-green-600">{word.correct}</span>
+                      <div key={index} className="flex justify-between items-center bg-white/80 backdrop-blur-sm rounded p-2 border border-red-100">
+                        <span className="text-red-600 font-medium">{word.typed}</span>
+                        <span className="text-gray-400">→</span>
+                        <span className="text-emerald-600 font-medium">{word.correct}</span>
                       </div>
                     ))}
                   </div>
@@ -489,9 +499,13 @@ export default function TypingPracticePage() {
               </div>
             )}
 
-            <Button onClick={handleReset} size="sm" className="px-3 sm:px-6 py-2 sm:py-3 rounded-lg sm:rounded-2xl text-sm sm:text-base w-full sm:w-auto">
+            <Button 
+              onClick={handleReset} 
+              size="sm" 
+              className="px-3 sm:px-6 py-2 sm:py-3 rounded-lg sm:rounded-2xl text-sm sm:text-base w-full sm:w-auto bg-gradient-to-r from-sky-500 to-cyan-500 text-white shadow-lg hover:shadow-cyan-500/50 transition-shadow"
+            >
               <RotateCcw className="h-4 w-4 sm:h-5 sm:w-5 mr-1.5" />
-              Retry
+              Thử lại
             </Button>
           </div>
         )}

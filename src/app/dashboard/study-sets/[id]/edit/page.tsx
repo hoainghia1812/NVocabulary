@@ -64,8 +64,6 @@ export default function EditStudySetPage() {
     loadData()
   }, [setId])
 
-
-
   const addVocabularyItem = () => {
     const newItem: VocabularyItemForm = {
       id: `temp-${Date.now()}`,
@@ -179,7 +177,7 @@ export default function EditStudySetPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-600"></div>
       </div>
     )
   }
@@ -187,24 +185,29 @@ export default function EditStudySetPage() {
   const activeItems = items.filter(item => !item.toDelete)
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-4 sm:p-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-4">
+      <div className="flex flex-col space-y-4 lg:flex-row lg:items-center lg:justify-between lg:space-y-0">
+        <div className="flex flex-col space-y-4 sm:flex-row sm:items-center sm:space-y-0 sm:space-x-4">
           <Link href={`/dashboard/study-sets/${setId}`}>
-            <Button variant="ghost" size="sm">
+            <Button variant="ghost" size="sm" className="w-fit hover:bg-sky-50">
               <ArrowLeft className="mr-2 h-4 w-4" />
-              Quay lại
             </Button>
           </Link>
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Chỉnh sửa bộ từ vựng</h1>
-            <p className="text-gray-600 mt-1">Cập nhật thông tin và từ vựng</p>
+            <h1 className="text-2xl sm:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-sky-600 to-cyan-500">
+              Chỉnh sửa bộ từ vựng
+            </h1>
+            <p className="text-sm sm:text-base text-gray-600 mt-1">Cập nhật thông tin và từ vựng</p>
           </div>
         </div>
 
         <div className="flex space-x-2">
-          <Button onClick={handleSave} disabled={saving}>
+          <Button 
+            onClick={handleSave} 
+            disabled={saving}
+            className="bg-gradient-to-r from-sky-500 to-cyan-500 text-white shadow-lg hover:shadow-cyan-500/50 transition-shadow"
+          >
             <Save className="mr-2 h-4 w-4" />
             {saving ? 'Đang lưu...' : 'Lưu thay đổi'}
           </Button>
@@ -212,16 +215,18 @@ export default function EditStudySetPage() {
       </div>
 
       {/* Set Information */}
-      <Card>
+      <Card className="bg-white/80 backdrop-blur-sm border-sky-100 shadow-lg">
         <CardHeader>
-          <CardTitle>Thông tin bộ từ vựng</CardTitle>
-          <CardDescription>
+          <CardTitle className="text-lg sm:text-xl text-transparent bg-clip-text bg-gradient-to-r from-sky-600 to-cyan-500">
+            Thông tin bộ từ vựng
+          </CardTitle>
+          <CardDescription className="text-sm sm:text-base text-gray-600">
             Cập nhật tên và mô tả cho bộ từ vựng
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md">
+            <div className="bg-red-100 border border-red-300 text-red-700 px-4 py-3 rounded-lg">
               {error}
             </div>
           )}
@@ -235,6 +240,7 @@ export default function EditStudySetPage() {
               value={setData.name}
               onChange={(e) => setSetData({ ...setData, name: e.target.value })}
               required
+              className="bg-white/50 border-sky-200 focus:ring-sky-500 focus:border-sky-500"
             />
           </div>
 
@@ -246,6 +252,7 @@ export default function EditStudySetPage() {
               id="description"
               value={setData.description}
               onChange={(e) => setSetData({ ...setData, description: e.target.value })}
+              className="bg-white/50 border-sky-200 focus:ring-sky-500 focus:border-sky-500"
             />
           </div>
 
@@ -255,7 +262,7 @@ export default function EditStudySetPage() {
               id="isPublic"
               checked={setData.is_public}
               onChange={(e) => setSetData({ ...setData, is_public: e.target.checked })}
-              className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+              className="w-4 h-4 text-sky-600 border-sky-300 rounded focus:ring-sky-500"
             />
             <label htmlFor="isPublic" className="text-sm text-gray-700">
               Chia sẻ công khai
@@ -265,18 +272,26 @@ export default function EditStudySetPage() {
       </Card>
 
       {/* Vocabulary Items */}
-      <Card>
+      <Card className="bg-white/80 backdrop-blur-sm border-sky-100 shadow-lg">
         <CardHeader>
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
             <div>
-              <CardTitle>Từ vựng ({activeItems.length})</CardTitle>
-              <CardDescription>
+              <CardTitle className="text-lg sm:text-xl text-transparent bg-clip-text bg-gradient-to-r from-sky-600 to-cyan-500">
+                Từ vựng ({activeItems.length})
+              </CardTitle>
+              <CardDescription className="text-sm sm:text-base text-gray-600">
                 Chỉnh sửa, thêm hoặc xóa từ vựng
               </CardDescription>
             </div>
-            <Button type="button" onClick={addVocabularyItem} variant="outline">
+            <Button 
+              type="button" 
+              onClick={addVocabularyItem} 
+              variant="outline"
+              className="w-full sm:w-auto border-sky-300 text-sky-700 hover:bg-sky-50"
+            >
               <Plus className="mr-2 h-4 w-4" />
-              Thêm từ
+              <span className="hidden sm:inline">Thêm từ</span>
+              <span className="sm:hidden">Thêm từ</span>
             </Button>
           </div>
         </CardHeader>
@@ -284,26 +299,52 @@ export default function EditStudySetPage() {
           {activeItems.length === 0 ? (
             <div className="text-center py-8">
               <p className="text-gray-500 mb-4">Chưa có từ vựng nào</p>
-              <Button onClick={addVocabularyItem}>
+              <Button 
+                onClick={addVocabularyItem}
+                className="bg-gradient-to-r from-sky-500 to-cyan-500 text-white shadow-lg hover:shadow-cyan-500/50 transition-shadow"
+              >
                 <Plus className="mr-2 h-4 w-4" />
                 Thêm từ vựng đầu tiên
               </Button>
             </div>
           ) : (
             activeItems.map((item, index) => (
-              <div key={item.id} className={`border rounded-lg p-4 space-y-3 ${item.toDelete ? 'opacity-50 bg-red-50' : ''}`}>
+              <div 
+                key={item.id} 
+                className={`border rounded-lg p-4 space-y-3 transition-all duration-300 ${
+                  item.toDelete 
+                    ? 'opacity-50 bg-red-50 border-red-200' 
+                    : 'border-sky-100 bg-gradient-to-r from-white to-sky-50/30 hover:border-sky-200 hover:shadow-md'
+                }`}
+              >
                 <div className="flex items-center justify-between">
-                  <h4 className="font-medium text-gray-900">
-                    Từ vựng #{index + 1} {item.isNew && <span className="text-green-600">(Mới)</span>}
+                  <h4 className="font-semibold text-gray-900 flex items-center gap-2">
+                    <span className="text-xs text-sky-600 font-bold bg-sky-100 px-2 py-1 rounded-full">
+                      #{index + 1}
+                    </span>
+                    Từ vựng
+                    {item.isNew && (
+                      <span className="text-xs bg-gradient-to-r from-emerald-500 to-green-500 text-white px-2 py-1 rounded-full font-semibold">
+                        ✨ Mới
+                      </span>
+                    )}
                   </h4>
                   <Button
                     type="button"
                     onClick={() => markItemForDeletion(item.id)}
                     variant="ghost"
                     size="sm"
-                    className={item.toDelete ? "text-green-600 hover:text-green-700" : "text-red-600 hover:text-red-700 hover:bg-red-50"}
+                    className={
+                      item.toDelete 
+                        ? "text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50" 
+                        : "text-red-600 hover:text-red-700 hover:bg-red-50"
+                    }
                   >
-                    {item.toDelete ? 'Khôi phục' : <Trash2 className="h-4 w-4" />}
+                    {item.toDelete ? (
+                      <span className="text-sm font-medium">🔄 Khôi phục</span>
+                    ) : (
+                      <Trash2 className="h-4 w-4" />
+                    )}
                   </Button>
                 </div>
 
@@ -314,6 +355,7 @@ export default function EditStudySetPage() {
                       value={item.english}
                       onChange={(e) => updateVocabularyItemField(item.id, 'english', e.target.value)}
                       disabled={item.toDelete}
+                      className="bg-white/50 border-sky-200 focus:ring-sky-500 focus:border-sky-500 disabled:bg-gray-100"
                     />
                   </div>
 
@@ -323,6 +365,7 @@ export default function EditStudySetPage() {
                       value={item.vietnamese}
                       onChange={(e) => updateVocabularyItemField(item.id, 'vietnamese', e.target.value)}
                       disabled={item.toDelete}
+                      className="bg-white/50 border-sky-200 focus:ring-sky-500 focus:border-sky-500 disabled:bg-gray-100"
                     />
                   </div>
 
@@ -332,6 +375,8 @@ export default function EditStudySetPage() {
                       value={item.phonetic || ''}
                       onChange={(e) => updateVocabularyItemField(item.id, 'phonetic', e.target.value)}
                       disabled={item.toDelete}
+                      className="bg-white/50 border-sky-200 focus:ring-sky-500 focus:border-sky-500 disabled:bg-gray-100"
+                      placeholder="/ˈeksæmpl/"
                     />
                   </div>
 
@@ -341,6 +386,8 @@ export default function EditStudySetPage() {
                       value={item.type || ''}
                       onChange={(e) => updateVocabularyItemField(item.id, 'type', e.target.value)}
                       disabled={item.toDelete}
+                      className="bg-white/50 border-sky-200 focus:ring-sky-500 focus:border-sky-500 disabled:bg-gray-100"
+                      placeholder="noun, verb, adjective..."
                     />
                   </div>
 
@@ -350,6 +397,8 @@ export default function EditStudySetPage() {
                       value={item.example || ''}
                       onChange={(e) => updateVocabularyItemField(item.id, 'example', e.target.value)}
                       disabled={item.toDelete}
+                      className="bg-white/50 border-sky-200 focus:ring-sky-500 focus:border-sky-500 disabled:bg-gray-100"
+                      placeholder="For example: This is an example sentence."
                     />
                   </div>
 
@@ -359,6 +408,8 @@ export default function EditStudySetPage() {
                       value={item.synonyms || ''}
                       onChange={(e) => updateVocabularyItemField(item.id, 'synonyms', e.target.value)}
                       disabled={item.toDelete}
+                      className="bg-white/50 border-sky-200 focus:ring-sky-500 focus:border-sky-500 disabled:bg-gray-100"
+                      placeholder="synonym1, synonym2, synonym3"
                     />
                   </div>
                 </div>

@@ -187,33 +187,37 @@ see you later;hẹn gặp lại`
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-4 sm:p-6">
       {/* Header */}
-      <div className="flex items-center space-x-4">
+      <div className="flex flex-col space-y-4 sm:flex-row sm:items-center sm:space-y-0 sm:space-x-4">
         <Link href="/dashboard/study-sets">
-          <Button variant="ghost" size="sm">
+          <Button variant="ghost" size="sm" className="w-fit hover:bg-sky-50">
             <ArrowLeft className="mr-2 h-4 w-4" />
             Quay lại
           </Button>
         </Link>
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Tạo bộ từ vựng mới</h1>
-          <p className="text-gray-600 mt-1">Tạo bộ từ vựng riêng để bắt đầu học</p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-sky-600 to-cyan-500">
+            Tạo bộ từ vựng mới
+          </h1>
+          <p className="text-sm sm:text-base text-gray-600 mt-1">Tạo bộ từ vựng riêng để bắt đầu học</p>
         </div>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Set Information */}
-        <Card>
+        <Card className="bg-white/80 backdrop-blur-sm border-sky-100 shadow-lg">
           <CardHeader>
-            <CardTitle>Thông tin bộ từ vựng</CardTitle>
-            <CardDescription>
+            <CardTitle className="text-lg sm:text-xl text-transparent bg-clip-text bg-gradient-to-r from-sky-600 to-cyan-500">
+              Thông tin bộ từ vựng
+            </CardTitle>
+            <CardDescription className="text-sm sm:text-base text-gray-600">
               Nhập tên và mô tả cho bộ từ vựng của bạn
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             {error && (
-              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md">
+              <div className="bg-red-100 border border-red-300 text-red-700 px-4 py-3 rounded-lg">
                 {error}
               </div>
             )}
@@ -228,6 +232,7 @@ see you later;hẹn gặp lại`
                 value={setData.name}
                 onChange={(e) => setSetData({ ...setData, name: e.target.value })}
                 required
+                className="bg-white/50 border-sky-200 focus:ring-sky-500 focus:border-sky-500"
               />
             </div>
 
@@ -240,6 +245,7 @@ see you later;hẹn gặp lại`
                 placeholder="Mô tả ngắn về bộ từ vựng này"
                 value={setData.description}
                 onChange={(e) => setSetData({ ...setData, description: e.target.value })}
+                className="bg-white/50 border-sky-200 focus:ring-sky-500 focus:border-sky-500"
               />
             </div>
 
@@ -249,7 +255,7 @@ see you later;hẹn gặp lại`
                 id="isPublic"
                 checked={setData.is_public}
                 onChange={(e) => setSetData({ ...setData, is_public: e.target.checked })}
-                className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                className="w-4 h-4 text-sky-600 border-sky-300 rounded focus:ring-sky-500"
               />
               <label htmlFor="isPublic" className="text-sm text-gray-700">
                 Chia sẻ công khai (người khác có thể xem và sử dụng)
@@ -259,70 +265,78 @@ see you later;hẹn gặp lại`
         </Card>
 
         {/* Vocabulary Items */}
-        <Card>
+        <Card className="bg-white/80 backdrop-blur-sm border-sky-100 shadow-lg">
           <CardHeader>
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
               <div>
-                <CardTitle>Từ vựng</CardTitle>
-                <CardDescription>
+                <CardTitle className="text-lg sm:text-xl text-transparent bg-clip-text bg-gradient-to-r from-sky-600 to-cyan-500">
+                  Từ vựng
+                </CardTitle>
+                <CardDescription className="text-sm sm:text-base text-gray-600">
                   Thêm các từ vựng vào bộ của bạn
                 </CardDescription>
               </div>
-              <div className="flex space-x-2">
+              <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 w-full sm:w-auto">
                 <Dialog open={importDialogOpen} onOpenChange={setImportDialogOpen}>
                   <DialogTrigger asChild>
-                    <Button type="button" variant="outline">
+                    <Button 
+                      type="button" 
+                      variant="outline"
+                      className="w-full sm:w-auto border-sky-300 text-sky-700 hover:bg-sky-50"
+                    >
                       <Upload className="mr-2 h-4 w-4" />
                       Nhập
                     </Button>
                   </DialogTrigger>
-                  <DialogContent className="max-w-2xl">
+                  <DialogContent className="max-w-2xl bg-white/95 backdrop-blur-sm border border-sky-100">
                     <DialogHeader>
-                      <DialogTitle>Nhập dữ liệu. Chép và dán dữ liệu ở đây (từ Word, Excel, Google Docs, v.v.)</DialogTitle>
+                      <DialogTitle className="text-lg sm:text-xl text-transparent bg-clip-text bg-gradient-to-r from-sky-600 to-cyan-500">
+                        Nhập dữ liệu
+                      </DialogTitle>
+                      <p className="text-sm text-gray-600">Chép và dán dữ liệu ở đây (từ Word, Excel, Google Docs, v.v.)</p>
                     </DialogHeader>
                     
-                    <div className="bg-blue-50 border border-blue-200 rounded-md p-3 text-sm">
+                    <div className="bg-gradient-to-r from-sky-50 to-cyan-50 border border-sky-200 rounded-lg p-3 text-sm">
                       <div className="flex items-center justify-between mb-2">
-                        <p className="font-medium text-blue-800">Ví dụ format dữ liệu:</p>
+                        <p className="font-medium text-sky-800">Ví dụ format dữ liệu:</p>
                         <Button 
                           type="button" 
                           variant="outline" 
                           size="sm"
                           onClick={handleLoadSample}
-                          className="text-xs"
+                          className="text-xs border-sky-300 text-sky-700 hover:bg-sky-50"
                         >
                           Tải dữ liệu mẫu
                         </Button>
                       </div>
-                      <p className="text-blue-700 font-mono">hello;xin chào</p>
-                      <p className="text-blue-700 font-mono">goodbye;tạm biệt</p>
-                      <p className="text-blue-700 font-mono">thank you;cám ơn</p>
+                      <p className="text-sky-700 font-mono">hello;xin chào</p>
+                      <p className="text-sky-700 font-mono">goodbye;tạm biệt</p>
+                      <p className="text-sky-700 font-mono">thank you;cám ơn</p>
                     </div>
                     
                     <div className="space-y-4">
-                                             <Textarea
-                         placeholder="hello;xin chào&#10;goodbye;tạm biệt&#10;thank you;cám ơn"
-                         value={importText}
-                         onChange={(e) => setImportText(e.target.value)}
-                         className="min-h-[200px] bg-gray-50 border-2 border-gray-300 font-mono text-sm"
-                       />
+                      <Textarea
+                        placeholder="hello;xin chào&#10;goodbye;tạm biệt&#10;thank you;cám ơn"
+                        value={importText}
+                        onChange={(e) => setImportText(e.target.value)}
+                        className="min-h-[200px] bg-white/50 border-2 border-sky-200 font-mono text-sm focus:border-sky-400"
+                      />
                       
-                      <div className="grid grid-cols-2 gap-6">
-                                                <div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <div>
                           <h4 className="font-medium text-gray-900 mb-3">Giữa thuật ngữ và định nghĩa</h4>
                           <RadioGroup value={delimiter} onValueChange={setDelimiter}>
                             <div className="flex items-center space-x-2">
-                              <RadioGroupItem value="comma" id="comma" />
-                              <label htmlFor="comma">Chấm phẩy</label>
+                              <RadioGroupItem value="comma" id="comma" className="border-sky-300 text-sky-600" />
+                              <label htmlFor="comma" className="text-gray-700">Chấm phẩy</label>
                             </div>
-                            
                           </RadioGroup>
                           {delimiter === 'custom' && (
                             <Input
                               placeholder="Nhập ký tự phân tách"
                               value={customDelimiter}
                               onChange={(e) => setCustomDelimiter(e.target.value)}
-                              className="mt-2 w-32"
+                              className="mt-2 w-32 bg-white/50 border-sky-200 focus:border-sky-400"
                             />
                           )}
                         </div>
@@ -331,28 +345,40 @@ see you later;hẹn gặp lại`
                           <h4 className="font-medium text-gray-900 mb-3">Giữa các thẻ</h4>
                           <RadioGroup value={termOrder} onValueChange={setTermOrder}>
                             <div className="flex items-center space-x-2">
-                              <RadioGroupItem value="english-first" id="english-first" />
-                              <label htmlFor="english-first">Dòng mới</label>
+                              <RadioGroupItem value="english-first" id="english-first" className="border-sky-300 text-sky-600" />
+                              <label htmlFor="english-first" className="text-gray-700">Dòng mới</label>
                             </div>
-                            
-                            
                           </RadioGroup>
                         </div>
                       </div>
                     </div>
                     
-                    <DialogFooter>
-                      <Button type="button" variant="outline" onClick={handleCancelImport}>
+                    <DialogFooter className="flex-col sm:flex-row gap-2 sm:gap-0">
+                      <Button 
+                        type="button" 
+                        variant="outline" 
+                        onClick={handleCancelImport}
+                        className="w-full sm:w-auto order-2 sm:order-1 border-sky-300 text-sky-700 hover:bg-sky-50"
+                      >
                         Hủy nhập
                       </Button>
-                      <Button type="button" onClick={handleImport}>
+                      <Button 
+                        type="button" 
+                        onClick={handleImport}
+                        className="w-full sm:w-auto order-1 sm:order-2 bg-gradient-to-r from-sky-500 to-cyan-500 text-white shadow-lg hover:shadow-cyan-500/50 transition-shadow"
+                      >
                         Nhập
                       </Button>
                     </DialogFooter>
                   </DialogContent>
                 </Dialog>
                 
-                <Button type="button" onClick={addVocabularyItem} variant="outline">
+                <Button 
+                  type="button" 
+                  onClick={addVocabularyItem} 
+                  variant="outline"
+                  className="w-full sm:w-auto border-sky-300 text-sky-700 hover:bg-sky-50"
+                >
                   <Plus className="mr-2 h-4 w-4" />
                   Thêm từ
                 </Button>
@@ -361,9 +387,17 @@ see you later;hẹn gặp lại`
           </CardHeader>
           <CardContent className="space-y-4">
             {vocabularyItems.map((item, index) => (
-              <div key={item.id} className="border rounded-lg p-4 space-y-3">
+              <div 
+                key={item.id} 
+                className="border border-sky-100 bg-gradient-to-r from-white to-sky-50/30 rounded-lg p-4 space-y-3 hover:border-sky-200 hover:shadow-md transition-all duration-300"
+              >
                 <div className="flex items-center justify-between">
-                  <h4 className="font-medium text-gray-900">Từ vựng #{index + 1}</h4>
+                  <h4 className="font-semibold text-gray-900 flex items-center gap-2">
+                    <span className="text-xs text-sky-600 font-bold bg-sky-100 px-2 py-1 rounded-full">
+                      #{index + 1}
+                    </span>
+                    Từ vựng
+                  </h4>
                   {vocabularyItems.length > 1 && (
                     <Button
                       type="button"
@@ -387,6 +421,7 @@ see you later;hẹn gặp lại`
                       value={item.english}
                       onChange={(e) => updateVocabularyItem(item.id, 'english', e.target.value)}
                       required
+                      className="bg-white/50 border-sky-200 focus:ring-sky-500 focus:border-sky-500"
                     />
                   </div>
 
@@ -399,6 +434,7 @@ see you later;hẹn gặp lại`
                       value={item.vietnamese}
                       onChange={(e) => updateVocabularyItem(item.id, 'vietnamese', e.target.value)}
                       required
+                      className="bg-white/50 border-sky-200 focus:ring-sky-500 focus:border-sky-500"
                     />
                   </div>
 
@@ -410,6 +446,7 @@ see you later;hẹn gặp lại`
                       placeholder="/həˈloʊ/"
                       value={item.phonetic}
                       onChange={(e) => updateVocabularyItem(item.id, 'phonetic', e.target.value)}
+                      className="bg-white/50 border-sky-200 focus:ring-sky-500 focus:border-sky-500"
                     />
                   </div>
 
@@ -421,6 +458,7 @@ see you later;hẹn gặp lại`
                       placeholder="interjection"
                       value={item.type}
                       onChange={(e) => updateVocabularyItem(item.id, 'type', e.target.value)}
+                      className="bg-white/50 border-sky-200 focus:ring-sky-500 focus:border-sky-500"
                     />
                   </div>
 
@@ -432,6 +470,7 @@ see you later;hẹn gặp lại`
                       placeholder="Hello, how are you?"
                       value={item.example}
                       onChange={(e) => updateVocabularyItem(item.id, 'example', e.target.value)}
+                      className="bg-white/50 border-sky-200 focus:ring-sky-500 focus:border-sky-500"
                     />
                   </div>
 
@@ -443,6 +482,7 @@ see you later;hẹn gặp lại`
                       placeholder="hi, greetings"
                       value={item.synonyms}
                       onChange={(e) => updateVocabularyItem(item.id, 'synonyms', e.target.value)}
+                      className="bg-white/50 border-sky-200 focus:ring-sky-500 focus:border-sky-500"
                     />
                   </div>
                 </div>
@@ -452,13 +492,21 @@ see you later;hẹn gặp lại`
         </Card>
 
         {/* Submit Button */}
-        <div className="flex justify-end space-x-4">
-          <Link href="/dashboard/study-sets">
-            <Button type="button" variant="outline">
+        <div className="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-4">
+          <Link href="/dashboard/study-sets" className="w-full sm:w-auto">
+            <Button 
+              type="button" 
+              variant="outline"
+              className="w-full border-sky-300 text-sky-700 hover:bg-sky-50"
+            >
               Hủy
             </Button>
           </Link>
-          <Button type="submit" disabled={loading}>
+          <Button 
+            type="submit" 
+            disabled={loading}
+            className="w-full sm:w-auto bg-gradient-to-r from-sky-500 to-cyan-500 text-white shadow-lg hover:shadow-cyan-500/50 transition-shadow"
+          >
             <Save className="mr-2 h-4 w-4" />
             {loading ? 'Đang tạo...' : 'Tạo bộ từ vựng'}
           </Button>
