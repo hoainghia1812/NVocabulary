@@ -140,13 +140,30 @@ export default function LearnPage() {
     loadData()
   }, [setId, generateQuestionsForPhase, studyMode])
 
-  // Auto focus cho chính tả khi câu hỏi thay đổi
+  // Auto focus cho chính tả và auto đọc từ khi câu hỏi thay đổi
   useEffect(() => {
     const currentQ = questions[currentQuestionIndex]
-    if (currentQ?.type === 'spelling' && !showResult && spellInputRef.current) {
+    if (currentQ && !showResult) {
+      // Auto đọc từ mới (chỉ cho trắc nghiệm)
       const timer = setTimeout(() => {
-        spellInputRef.current?.focus()
-      }, 100)
+        if (currentQ.type === 'multiple-choice') {
+          // Đọc từ tiếng Anh trong trắc nghiệm
+          speakText(currentQ.term, currentQ.language === 'english' ? 'en' : 'vi')
+        }
+        // Không đọc tự động trong chế độ chính tả
+      }, 300)
+      
+      // Auto focus cho chính tả
+      if (currentQ?.type === 'spelling' && spellInputRef.current) {
+        const focusTimer = setTimeout(() => {
+          spellInputRef.current?.focus()
+        }, 400)
+        return () => {
+          clearTimeout(timer)
+          clearTimeout(focusTimer)
+        }
+      }
+      
       return () => clearTimeout(timer)
     }
   }, [questions, currentQuestionIndex, showResult])
@@ -262,10 +279,20 @@ export default function LearnPage() {
       setSpellInput('')
       setShowResult(false)
       setShowHint(false)
-      // Auto focus cho chính tả
+      // Auto focus cho chính tả và auto đọc từ
       setTimeout(() => {
-        if (questions[currentQuestionIndex + 1]?.type === 'spelling' && spellInputRef.current) {
+        const nextQ = questions[currentQuestionIndex + 1]
+        if (nextQ?.type === 'spelling' && spellInputRef.current) {
           spellInputRef.current.focus()
+        }
+        // Auto đọc từ mới (chỉ cho trắc nghiệm)
+        if (nextQ) {
+          setTimeout(() => {
+            if (nextQ.type === 'multiple-choice') {
+              speakText(nextQ.term, nextQ.language === 'english' ? 'en' : 'vi')
+            }
+            // Không đọc tự động trong chế độ chính tả
+          }, 200)
         }
       }, 100)
     } else {
@@ -362,10 +389,20 @@ export default function LearnPage() {
 
 
       
-      // Auto focus cho chính tả khi bắt đầu phase mới
+      // Auto focus cho chính tả và auto đọc từ khi bắt đầu phase mới
       setTimeout(() => {
         if ((nextPhase === 'spell1' || nextPhase === 'spell2') && spellInputRef.current) {
           spellInputRef.current.focus()
+        }
+        // Auto đọc từ đầu tiên của phase mới (chỉ cho trắc nghiệm)
+        const firstQuestion = nextQuestions[0]
+        if (firstQuestion) {
+          setTimeout(() => {
+            if (firstQuestion.type === 'multiple-choice') {
+              speakText(firstQuestion.term, firstQuestion.language === 'english' ? 'en' : 'vi')
+            }
+            // Không đọc tự động trong chế độ chính tả
+          }, 200)
         }
       }, 100)
     }
@@ -454,6 +491,17 @@ export default function LearnPage() {
       quiz2: { correct: 0, total: 0 },
       spell2: { correct: 0, total: 0 }
     })
+    
+    // Auto đọc từ đầu tiên sau khi restart (chỉ cho trắc nghiệm)
+    setTimeout(() => {
+      const firstQuestion = firstQuestions[0]
+      if (firstQuestion) {
+        if (firstQuestion.type === 'multiple-choice') {
+          speakText(firstQuestion.term, firstQuestion.language === 'english' ? 'en' : 'vi')
+        }
+        // Không đọc tự động trong chế độ chính tả
+      }
+    }, 500)
   }
 
   // Effect để restart khi thay đổi study mode
@@ -532,21 +580,21 @@ export default function LearnPage() {
     const percentage = Math.round((score.correct / score.total) * 100)
     
     return (
-      <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 p-2 sm:p-4">
+      <div className="min-h-screen bg-gradient-to-br from-sky-50 via-cyan-50 to-blue-50 p-2 sm:p-4">
         <div className="max-w-2xl mx-auto space-y-4 sm:space-y-6">
           <div className="text-center px-2">
             <div className="text-4xl sm:text-6xl mb-3 sm:mb-4">🎉</div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Hoàn thành!</h1>
-            <p className="text-sm sm:text-base text-gray-600">Bạn đã hoàn thành tất cả 4 giai đoạn học tập</p>
+            <h1 className="text-2xl sm:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-sky-600 to-cyan-500 mb-2">Hoàn thành!</h1>
+            <p className="text-sm sm:text-base text-gray-600">Bạn đã hoàn thành tất cả giai đoạn học tập</p>
           </div>
 
-          <Card>
+          <Card className="bg-white/80 backdrop-blur-sm border border-sky-100 shadow-lg">
             <CardHeader className="p-3 sm:p-6">
-              <CardTitle className="text-center text-lg sm:text-xl">Kết quả tổng hợp</CardTitle>
+              <CardTitle className="text-center text-lg sm:text-xl text-transparent bg-clip-text bg-gradient-to-r from-sky-600 to-cyan-500">Kết quả tổng hợp</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4 sm:space-y-6 p-3 sm:p-6">
               <div className="text-center">
-                <div className="text-3xl sm:text-4xl font-bold text-green-600 mb-2">
+                <div className="text-3xl sm:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-green-500 mb-2">
                   {percentage}%
                 </div>
                 <div className="text-base sm:text-lg text-gray-700">
@@ -556,29 +604,29 @@ export default function LearnPage() {
 
               {/* Chi tiết từng giai đoạn */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                <div className="bg-blue-50 p-3 sm:p-4 rounded-lg">
-                  <h3 className="font-semibold text-blue-800 mb-2 text-sm sm:text-base">Trắc nghiệm 1</h3>
-                  <p className="text-blue-600 text-sm sm:text-base">
+                <div className="bg-gradient-to-br from-sky-50 to-cyan-50 border border-sky-200 p-3 sm:p-4 rounded-lg">
+                  <h3 className="font-semibold text-transparent bg-clip-text bg-gradient-to-r from-sky-700 to-cyan-600 mb-2 text-sm sm:text-base">Trắc nghiệm 1</h3>
+                  <p className="text-sky-600 text-sm sm:text-base">
                     {phaseScores.quiz1.correct} / {phaseScores.quiz1.total} 
                     {phaseScores.quiz1.total > 0 && ` (${Math.round((phaseScores.quiz1.correct / phaseScores.quiz1.total) * 100)}%)`}
                   </p>
                 </div>
-                <div className="bg-pink-50 p-3 sm:p-4 rounded-lg">
-                  <h3 className="font-semibold text-pink-800 mb-2 text-sm sm:text-base">Chính tả 1</h3>
+                <div className="bg-gradient-to-br from-pink-50 to-rose-50 border border-pink-200 p-3 sm:p-4 rounded-lg">
+                  <h3 className="font-semibold text-transparent bg-clip-text bg-gradient-to-r from-pink-700 to-rose-600 mb-2 text-sm sm:text-base">Chính tả 1</h3>
                   <p className="text-pink-600 text-sm sm:text-base">
                     {phaseScores.spell1.correct} / {phaseScores.spell1.total}
                     {phaseScores.spell1.total > 0 && ` (${Math.round((phaseScores.spell1.correct / phaseScores.spell1.total) * 100)}%)`}
                   </p>
                 </div>
-                <div className="bg-green-50 p-3 sm:p-4 rounded-lg">
-                  <h3 className="font-semibold text-green-800 mb-2 text-sm sm:text-base">Trắc nghiệm 2</h3>
-                  <p className="text-green-600 text-sm sm:text-base">
+                <div className="bg-gradient-to-br from-emerald-50 to-green-50 border border-emerald-200 p-3 sm:p-4 rounded-lg">
+                  <h3 className="font-semibold text-transparent bg-clip-text bg-gradient-to-r from-emerald-700 to-green-600 mb-2 text-sm sm:text-base">Trắc nghiệm 2</h3>
+                  <p className="text-emerald-600 text-sm sm:text-base">
                     {phaseScores.quiz2.correct} / {phaseScores.quiz2.total}
                     {phaseScores.quiz2.total > 0 && ` (${Math.round((phaseScores.quiz2.correct / phaseScores.quiz2.total) * 100)}%)`}
                   </p>
                 </div>
-                <div className="bg-purple-50 p-3 sm:p-4 rounded-lg">
-                  <h3 className="font-semibold text-purple-800 mb-2 text-sm sm:text-base">Chính tả 2</h3>
+                <div className="bg-gradient-to-br from-purple-50 to-violet-50 border border-purple-200 p-3 sm:p-4 rounded-lg">
+                  <h3 className="font-semibold text-transparent bg-clip-text bg-gradient-to-r from-purple-700 to-violet-600 mb-2 text-sm sm:text-base">Chính tả 2</h3>
                   <p className="text-purple-600 text-sm sm:text-base">
                     {phaseScores.spell2.correct} / {phaseScores.spell2.total}
                     {phaseScores.spell2.total > 0 && ` (${Math.round((phaseScores.spell2.correct / phaseScores.spell2.total) * 100)}%)`}
@@ -587,11 +635,11 @@ export default function LearnPage() {
               </div>
               
               <div className="flex flex-col sm:flex-row justify-center space-y-2 sm:space-y-0 sm:space-x-4 pt-3 sm:pt-4">
-                <Button onClick={handleRestart} className="w-full sm:w-auto text-sm sm:text-base">
+                <Button onClick={handleRestart} className="w-full sm:w-auto text-sm sm:text-base bg-gradient-to-r from-sky-500 to-cyan-500 text-white shadow-lg hover:shadow-cyan-500/50 transition-shadow">
                   Học lại
                 </Button>
                 <Link href={`/dashboard/study-sets/${setId}/study`}>
-                  <Button variant="outline" className="w-full sm:w-auto text-sm sm:text-base">
+                  <Button variant="outline" className="w-full sm:w-auto text-sm sm:text-base border-sky-300 text-sky-700 hover:bg-sky-50">
                     Chọn cách học khác
                   </Button>
                 </Link>
@@ -606,18 +654,18 @@ export default function LearnPage() {
 
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 p-2 sm:p-4">
+    <div className="min-h-screen bg-gradient-to-br from-sky-50 via-cyan-50 to-blue-50 p-2 sm:p-4">
       <div className="max-w-2xl mx-auto space-y-4 sm:space-y-6">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0">
           <div className="flex items-center space-x-2 sm:space-x-4">
             <Link href={`/dashboard/study-sets/${setId}/study`}>
-              <Button variant="ghost" size="sm">
+              <Button variant="ghost" size="sm" className="hover:bg-sky-100">
                 <ArrowLeft className="mr-1 h-4 w-4 sm:h-5 sm:w-5" />
               </Button>
             </Link>
             <div className="flex-1 min-w-0">
-              <h1 className="text-lg sm:text-2xl font-bold text-gray-900 truncate">
+              <h1 className="text-lg sm:text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-sky-600 to-cyan-500 truncate">
                 {set.name}
               </h1>
             </div>
@@ -633,7 +681,7 @@ export default function LearnPage() {
                 <div className="text-xs sm:text-sm text-gray-500">
                   Câu {currentQuestionIndex + 1} / {questions.length}
                 </div>
-                <div className="text-xs sm:text-sm font-medium text-green-600">
+                <div className="text-xs sm:text-sm font-medium text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-green-500">
                   Điểm: {score.correct} / {score.total}
                 </div>
               </>
@@ -642,16 +690,16 @@ export default function LearnPage() {
         </div>
 
         {/* Study Mode Selector */}
-        <div className="bg-white rounded-lg p-3 sm:p-4 shadow-sm">
+        <div className="bg-white/80 backdrop-blur-sm border border-sky-100 rounded-lg p-3 sm:p-4 shadow-lg">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0">
             <div className="flex items-center space-x-2">
-              <Settings className="h-4 w-4 text-gray-500" />
+              <Settings className="h-4 w-4 text-sky-600" />
               <span className="text-xs sm:text-sm font-medium text-gray-700">Chế độ học:</span>
             </div>
             <select
               value={studyMode}
               onChange={(e) => setStudyMode(e.target.value as StudyMode)}
-              className="text-xs sm:text-sm border border-gray-300 rounded-md px-2 sm:px-3 py-1 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-full sm:w-auto"
+              className="text-xs sm:text-sm border-2 border-sky-200 rounded-lg px-2 sm:px-3 py-1 bg-white/50 focus:outline-none focus:ring-2 focus:ring-sky-400 focus:border-sky-400 w-full sm:w-auto"
             >
               <option value="mixed">🔀 Cả hai (Trắc nghiệm + Chính tả)</option>
               <option value="quiz-only">🎯 Chỉ trắc nghiệm</option>
@@ -661,14 +709,14 @@ export default function LearnPage() {
         </div>
 
         {/* Overall Progress */}
-        <div className="bg-white rounded-lg p-3 sm:p-4 shadow-sm">
+        <div className="bg-white/80 backdrop-blur-sm border border-sky-100 rounded-lg p-3 sm:p-4 shadow-lg">
           <div className="flex justify-between text-xs sm:text-sm text-gray-600 mb-2">
             <span>Tiến độ </span>
             <span>{Math.round(getOverallProgress())}%</span>
           </div>
           <div className="w-full bg-gray-200 rounded-full h-2">
             <div 
-              className="bg-green-600 h-2 rounded-full transition-all duration-300"
+              className="bg-gradient-to-r from-sky-500 to-cyan-500 h-2 rounded-full transition-all duration-300"
               style={{ width: `${getOverallProgress()}%` }}
             ></div>
           </div>
@@ -678,10 +726,10 @@ export default function LearnPage() {
 
         {/* Review Screen or Question */}
         {(currentPhase === 'review1' || currentPhase === 'review2') ? (
-          <Card>
+          <Card className="bg-white/80 backdrop-blur-sm border border-sky-100 shadow-lg">
             <CardHeader className="p-3 sm:p-6">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-1 sm:space-y-0">
-                <CardTitle className="text-lg sm:text-xl">Ôn tập từ vựng</CardTitle>
+                <CardTitle className="text-lg sm:text-xl text-transparent bg-clip-text bg-gradient-to-r from-sky-600 to-cyan-500">Ôn tập từ vựng</CardTitle>
                 <div className="text-xs sm:text-sm text-gray-500">
                   Bấm vào từ tiếng Anh để nghe phát âm
                 </div>
@@ -694,7 +742,7 @@ export default function LearnPage() {
                   {currentPhaseVocabulary.map((item) => (
                     <div 
                       key={item.id}
-                      className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 sm:p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors space-y-2 sm:space-y-0"
+                      className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 sm:p-4 bg-gradient-to-r from-sky-50 to-cyan-50 border border-sky-100 rounded-lg hover:bg-gradient-to-r hover:from-sky-100 hover:to-cyan-100 transition-colors space-y-2 sm:space-y-0"
                     >
                       <div className="flex-1 min-w-0">
                         <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 space-y-1 sm:space-y-0">
@@ -711,20 +759,20 @@ export default function LearnPage() {
                         variant="ghost"
                         size="sm"
                         onClick={() => speakText(item.english, 'en')}
-                        className="flex items-center justify-center space-x-1 hover:bg-blue-100 self-end sm:self-center"
+                        className="flex items-center justify-center space-x-1 hover:bg-sky-200 self-end sm:self-center"
                       >
-                        <Volume2 className="h-4 w-4" />
+                        <Volume2 className="h-4 w-4 text-sky-600" />
                       </Button>
                     </div>
                   ))}
                 </div>
                 
                 {/* Nút tiếp theo */}
-                <div className="text-center pt-3 sm:pt-4 border-t">
+                <div className="text-center pt-3 sm:pt-4 border-t border-sky-100">
                   <Button 
                     onClick={moveToNextPhase}
                     size="lg"
-                    className="px-6 sm:px-8 w-full sm:w-auto"
+                    className="px-6 sm:px-8 w-full sm:w-auto bg-gradient-to-r from-sky-500 to-cyan-500 text-white shadow-lg hover:shadow-cyan-500/50 transition-shadow"
                   >
                     Bắt đầu chính tả
                   </Button>
@@ -733,10 +781,10 @@ export default function LearnPage() {
             </CardContent>
           </Card>
         ) : (
-          <Card>
+          <Card className="bg-white/80 backdrop-blur-sm border border-sky-100 shadow-lg">
             <CardHeader>
               <div className="flex items-center justify-between">
-                <CardTitle>
+                <CardTitle className="text-transparent bg-clip-text bg-gradient-to-r from-sky-600 to-cyan-500">
                   {currentQuestion?.type === 'multiple-choice' 
                     ? (currentQuestion.language === 'english' ? 'Tiếng Anh → Tiếng Việt' : 'Tiếng Việt → Tiếng Anh')
                     : 'Chính tả'
@@ -752,8 +800,9 @@ export default function LearnPage() {
                         : currentQuestion.term, 
                       currentQuestion.language === 'english' ? 'en' : 'vi'
                     )}
+                    className="hover:bg-sky-100"
                   >
-                    <Volume2 className="h-4 w-4" />
+                    <Volume2 className="h-4 w-4 text-sky-600" />
                   </Button>
                 )}
               </div>
@@ -774,16 +823,16 @@ export default function LearnPage() {
                     <Button
                       key={index}
                       variant="outline"
-                      className={`p-3 sm:p-4 h-auto text-left justify-start min-h-[48px] sm:min-h-[56px] ${
+                      className={`p-3 sm:p-4 h-auto text-left justify-start min-h-[48px] sm:min-h-[56px] border-2 ${
                         showResult
                           ? option === currentQuestion.correctAnswer
-                            ? 'bg-green-100 border-green-500 text-green-700'
+                            ? 'bg-gradient-to-r from-emerald-50 to-green-50 border-emerald-500 text-emerald-700'
                             : option === selectedAnswer
-                            ? 'bg-red-100 border-red-500 text-red-700'
-                            : 'opacity-50'
+                            ? 'bg-gradient-to-r from-red-50 to-rose-50 border-red-500 text-red-700'
+                            : 'opacity-50 border-gray-200'
                           : selectedAnswer === option
-                          ? 'bg-blue-100 border-blue-500'
-                          : ''
+                          ? 'bg-gradient-to-r from-sky-50 to-cyan-50 border-sky-500 text-sky-700'
+                          : 'border-sky-200 hover:bg-gradient-to-r hover:from-sky-50 hover:to-cyan-50 hover:border-sky-300'
                       }`}
                       onClick={() => handleAnswerSelect(option)}
                       disabled={showResult}
@@ -813,12 +862,12 @@ export default function LearnPage() {
                       }
                     }}
                     disabled={showResult}
-                    className={`text-base sm:text-lg p-3 sm:p-4 ${
+                    className={`text-base sm:text-lg p-3 sm:p-4 border-2 ${
                       showResult
                         ? spellInput.toLowerCase() === currentQuestion.correctAnswer.toLowerCase()
-                          ? 'bg-green-100 border-green-500'
-                          : 'bg-red-100 border-red-500'
-                        : ''
+                          ? 'bg-gradient-to-r from-emerald-50 to-green-50 border-emerald-500 text-emerald-700'
+                          : 'bg-gradient-to-r from-red-50 to-rose-50 border-red-500 text-red-700'
+                        : 'border-sky-200 focus:border-sky-400 focus:ring-2 focus:ring-sky-100'
                     }`}
                   />
                   {showResult && spellInput.toLowerCase() !== currentQuestion.correctAnswer.toLowerCase() && (
@@ -834,12 +883,12 @@ export default function LearnPage() {
                           variant="outline" 
                           size="sm"
                           disabled={showHint}
-                          className="text-xs px-3 py-2"
+                          className="text-xs px-3 py-2 border-sky-300 text-sky-700 hover:bg-sky-50"
                         >
                           💡 Gợi ý (2 ký tự đầu)
                         </Button>
                       </div>
-                      <Button onClick={handleSpellSubmit} className="w-full text-base sm:text-lg" size="lg">
+                      <Button onClick={handleSpellSubmit} className="w-full text-base sm:text-lg bg-gradient-to-r from-sky-500 to-cyan-500 text-white shadow-lg hover:shadow-cyan-500/50 transition-shadow" size="lg">
                         Kiểm tra
                       </Button>
                     </div>
@@ -849,7 +898,7 @@ export default function LearnPage() {
 
             {showResult && currentQuestion?.type === 'spelling' && (
               <div className="mt-6 text-center">
-                <Button onClick={handleNext} size="lg">
+                <Button onClick={handleNext} size="lg" className="bg-gradient-to-r from-sky-500 to-cyan-500 text-white shadow-lg hover:shadow-cyan-500/50 transition-shadow">
                   {currentQuestionIndex < questions.length - 1 
                     ? 'Câu tiếp theo' 
                     : (currentPhase === 'spell2' ? 'Hoàn thành' : 'Giai đoạn tiếp theo')

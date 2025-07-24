@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState, useRef, useCallback } from "react"
-import { getVocabularySets, getVocabularyItems } from '@/lib/api/vocabulary'
+import { getVocabularySets, getVocabularyItems, getAllUserVocabularyItems } from '@/lib/api/vocabulary'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { RotateCcw, Settings, Play, Pause, Volume2, VolumeX } from "lucide-react"
@@ -28,12 +28,14 @@ export default function TypingPracticePage() {
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [duration, setDuration] = useState(60)
   const [wordlist, setWordlist] = useState("")
-  const [randomize, setRandomize] = useState(true)
+  const [vocabularySource, setVocabularySource] = useState<'custom' | 'all' | 'random'>('all')
+  const [randomCount, setRandomCount] = useState(50)
   const [wordArray, setWordArray] = useState<string[]>([])
   const [currentIndex, setCurrentIndex] = useState(0)
   const [correctCount, setCorrectCount] = useState(0)
   const [wrongCount, setWrongCount] = useState(0)
   const [wrongWords, setWrongWords] = useState<Array<{typed: string, correct: string}>>([])
+  const [startTime, setStartTime] = useState<number | null>(null)
   const intervalRef = useRef<NodeJS.Timeout | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const [isMuted, setIsMuted] = useState(false)
@@ -72,32 +74,58 @@ export default function TypingPracticePage() {
   }, [currentIndex, running, isMuted, finished, playCurrentWord])
 
   useEffect(() => {
-    // Ưu tiên lấy wordlist từ localStorage
-    const saved = localStorage.getItem('typing_wordlist')
-    if (saved) {
-      setWordlist(saved)
-      const arr = saved.split(/\s+|\|/).filter(Boolean)
-      setWordArray(arr)
+    // Load vocabulary from API based on source
+    const loadVocabulary = async () => {
+      try {
+        let allItems: { english: string; vietnamese: string }[] = []
+        
+        if (vocabularySource === 'all' || vocabularySource === 'random') {
+          // Get all vocabulary items from user's sets
+          allItems = await getAllUserVocabularyItems()
+        } else if (vocabularySource === 'custom') {
+          // Parse custom wordlist
+          if (wordlist.trim()) {
+            const words = wordlist.split(/\s+|\n/).filter(Boolean)
+            setWordArray(words)
+            return
     } else {
-      // Nếu chưa có, lấy từ API như cũ
-      (async () => {
-        try {
-          const sets = await getVocabularySets()
-          if (sets.length === 0) {
             setWordArray([])
             return
           }
-          const items = await getVocabularyItems(sets[0].id)
-          setWordArray(items.map(item => item.english))
-        } catch {
-          setWordArray([])
+        } else {
+          // Fallback to first set
+          const sets = await getVocabularySets()
+          if (sets.length > 0) {
+            allItems = await getVocabularyItems(sets[0].id)
+          }
         }
-      })()
+        
+        if (allItems.length === 0) {
+          setWordArray([])
+          return
+        }
+        
+        let finalWords = allItems.map(item => item.english)
+        
+        // If random source, shuffle and limit count
+        if (vocabularySource === 'random') {
+          finalWords = finalWords.sort(() => Math.random() - 0.5)
+          if (randomCount > 0) {
+            finalWords = finalWords.slice(0, randomCount)
+        }
+        }
+        
+        setWordArray(finalWords)
+      } catch {
+        setWordArray([])
     }
-  }, [])
+    }
+    
+    loadVocabulary()
+  }, [vocabularySource, randomCount, wordlist])
 
   useEffect(() => {
-    if (running && timer > 0) {
+    if (running && timer > 0 && duration !== -1) {
       intervalRef.current = setInterval(() => {
         setTimer(t => t - 1)
       }, 1000)
@@ -107,33 +135,34 @@ export default function TypingPracticePage() {
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current)
     }
-  }, [running, timer])
+  }, [running, timer, duration])
 
   useEffect(() => {
-    if (timer === 0) {
+    if (timer === 0 && duration !== -1) {
       setRunning(false)
       setFinished(true)
     }
-  }, [timer])
+  }, [timer, duration])
 
   const handleStart = () => {
     setRunning(true)
     setFinished(false)
+    if (duration === -1) {
+      setStartTime(Date.now())
+    }
     if (inputRef.current) inputRef.current.focus()
   }
 
   const handleReset = () => {
     setInput("")
-    setTimer(duration)
+                          setTimer(duration === -1 ? -1 : duration)
     setRunning(false)
     setFinished(false)
     setCurrentIndex(0)
     setCorrectCount(0)
     setWrongCount(0)
     setWrongWords([])
-    // reset lại wordArray từ wordlist hiện tại
-    const arr = wordlist.split(/\s+|\|/).filter(Boolean)
-    setWordArray(arr)
+    setStartTime(null)
     if (inputRef.current) inputRef.current.focus()
   }
 
@@ -203,7 +232,9 @@ export default function TypingPracticePage() {
     lines[startLine + 1]
   ].filter(Boolean)
 
-  const wpm = Math.round((correctCount / (duration - timer)) * 60) || 0
+  const wpm = duration === -1 
+    ? (running ? Math.round((correctCount / ((Date.now() - (startTime || Date.now())) / 1000)) * 60) || 0 : 0)
+    : Math.round((correctCount / (duration - timer)) * 60) || 0
   const accuracy = correctCount + wrongCount > 0 ? Math.round((correctCount / (correctCount + wrongCount)) * 100) : 0
 
   return (
@@ -229,7 +260,7 @@ export default function TypingPracticePage() {
           </div>
           <div className="bg-white/80 backdrop-blur-sm border border-sky-100 rounded-lg sm:rounded-2xl shadow-lg px-3 sm:px-6 py-2 sm:py-4 text-center flex-1 sm:flex-none sm:min-w-[120px]">
             <div className="text-lg sm:text-2xl font-bold text-gray-700">
-              {pad(Math.floor(timer / 60))}:{pad(timer % 60)}
+              {duration === -1 ? '∞' : `${pad(Math.floor(timer / 60))}:${pad(timer % 60)}`}
             </div>
             <div className="text-xs sm:text-sm text-gray-600">Time</div>
           </div>
@@ -378,6 +409,41 @@ export default function TypingPracticePage() {
                   </DialogHeader>
                   <div className="space-y-4 sm:space-y-6 px-1">
                     <div>
+                      <label className="block font-medium mb-2 text-gray-700">
+                        Nguồn từ vựng:
+                      </label>
+                      <select
+                        className="w-full border-2 border-sky-200 rounded-lg px-3 py-2 focus:border-sky-400 focus:outline-none bg-white/50"
+                        value={vocabularySource}
+                        onChange={e => setVocabularySource(e.target.value as 'custom' | 'all' | 'random')}
+                      >
+                        <option value="all">Tất cả từ vựng của tôi</option>
+                        <option value="random">Ngẫu nhiên từ bộ sưu tập</option>
+                        <option value="custom">Tùy chỉnh danh sách</option>
+                      </select>
+                    </div>
+                    
+                    {vocabularySource === 'random' && (
+                      <div>
+                        <label className="block font-medium mb-2 text-gray-700">
+                          Số từ ngẫu nhiên:
+                        </label>
+                        <select
+                          className="w-full border-2 border-sky-200 rounded-lg px-3 py-2 focus:border-sky-400 focus:outline-none bg-white/50"
+                          value={randomCount}
+                          onChange={e => setRandomCount(Number(e.target.value))}
+                        >
+                          <option value={20}>20 từ</option>
+                          <option value={30}>30 từ</option>
+                          <option value={50}>50 từ</option>
+                          <option value={100}>100 từ</option>
+                          <option value={200}>200 từ</option>
+                          <option value={-1}>Tất cả</option>
+                        </select>
+                      </div>
+                    )}
+                    
+                    <div>
                       <label className="block font-medium mb-1.5 sm:mb-2 text-gray-700 text-sm sm:text-base">
                         Thời gian:
                       </label>
@@ -394,35 +460,29 @@ export default function TypingPracticePage() {
                         <option value={900}>15 phút</option>
                         <option value={1200}>20 phút</option>
                         <option value={1800}>30 phút</option>
+                        <option value={2700}>45 phút</option>
+                        <option value={3600}>1 giờ</option>
+                        <option value={-1}>Vô hạn</option>
                       </select>
                     </div>
+                    
+                    {vocabularySource === 'custom' && (
                     <div>
-                      <label className="block font-medium mb-1.5 sm:mb-2 text-gray-700 text-sm sm:text-base">
+                        <label className="block font-medium mb-1.5 sm:mb-2 text-gray-700 text-sm sm:text-base">
                         Danh sách từ vựng
-                        <span className="text-xs sm:text-sm text-gray-500 block sm:inline">
-                          <span className="hidden sm:inline">(</span>nhập các từ bằng dấu cách hoặc<span className="hidden sm:inline">)</span>
+                          <span className="text-xs sm:text-sm text-gray-500 block sm:inline">
+                            <span className="hidden sm:inline">(</span>nhập các từ bằng dấu cách hoặc xuống dòng<span className="hidden sm:inline">)</span>
                         </span>
                       </label>
                       <Textarea
                         value={wordlist}
                         onChange={e => setWordlist(e.target.value)}
-                        className="min-h-[80px] sm:min-h-[100px] border-2 border-sky-200 rounded-lg focus:border-sky-400 text-sm sm:text-base bg-white/50"
-                        placeholder="Enter vocabulary words..."
+                          className="min-h-[80px] sm:min-h-[100px] border-2 border-sky-200 rounded-lg focus:border-sky-400 text-sm sm:text-base bg-white/50"
+                          placeholder="apple book cat dog..."
                         rows={4}
                       />
                     </div>
-                    <div className="flex items-start sm:items-center space-x-2 sm:space-x-3">
-                      <input
-                        id="randomize"
-                        type="checkbox"
-                        checked={randomize}
-                        onChange={e => setRandomize(e.target.checked)}
-                        className="w-4 h-4 sm:w-4 sm:h-4 text-sky-600 border-sky-300 rounded focus:ring-sky-500 mt-0.5 sm:mt-0 flex-shrink-0"
-                      />
-                      <label htmlFor="randomize" className="font-medium text-gray-700 text-sm sm:text-base leading-tight">
-                        Ngẫu nhiên các từ
-                      </label>
-                    </div>
+                    )}
                   </div>
                   <DialogFooter className="pt-4 sm:pt-6 flex-col sm:flex-row gap-2 sm:gap-0">
                     <Button 
@@ -433,10 +493,37 @@ export default function TypingPracticePage() {
                       Hủy
                     </Button>
                     <Button 
-                      onClick={() => {
-                        let arr = wordlist.split(/\s+|\|/).filter(Boolean)
-                        if (randomize) arr = arr.sort(() => Math.random() - 0.5)
-                        localStorage.setItem('typing_wordlist', arr.join(' '))
+                      onClick={async () => {
+                        try {
+                          let finalWords: string[] = []
+                          
+                          if (vocabularySource === 'custom') {
+                            const words = wordlist.split(/\s+|\n/).filter(Boolean)
+                            finalWords = words
+                          } else {
+                            // Load from API
+                            let allItems: { english: string; vietnamese: string }[] = []
+                            
+                            if (vocabularySource === 'all' || vocabularySource === 'random') {
+                              allItems = await getAllUserVocabularyItems()
+                            }
+                            
+                            if (allItems.length === 0) {
+                              alert('Không tìm thấy từ vựng nào. Vui lòng tạo bộ từ vựng trước.')
+                              return
+                            }
+                            
+                            finalWords = allItems.map(item => item.english)
+                            
+                            // If random source, shuffle and limit count
+                            if (vocabularySource === 'random') {
+                              finalWords = finalWords.sort(() => Math.random() - 0.5)
+                              if (randomCount > 0) {
+                                finalWords = finalWords.slice(0, randomCount)
+                              }
+                            }
+                          }
+                          
                         setInput("")
                         setTimer(duration)
                         setRunning(false)
@@ -445,8 +532,12 @@ export default function TypingPracticePage() {
                         setCorrectCount(0)
                         setWrongCount(0)
                         setWrongWords([])
-                        setWordArray(arr)
+                          setStartTime(null)
+                          setWordArray(finalWords)
                         setSettingsOpen(false)
+                        } catch {
+                          alert('Có lỗi xảy ra. Vui lòng thử lại.')
+                        }
                       }}
                       className="w-full sm:w-auto order-1 sm:order-2 text-sm sm:text-base bg-gradient-to-r from-sky-500 to-cyan-500 text-white shadow-lg hover:shadow-cyan-500/50 transition-shadow"
                     >

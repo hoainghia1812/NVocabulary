@@ -190,3 +190,21 @@ export async function getPublicVocabularySets() {
   if (error) throw error
   return data as VocabularySet[]
 } 
+
+// Get all vocabulary items from all user's sets
+export async function getAllUserVocabularyItems() {
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) throw new Error('User not authenticated')
+
+  const { data, error } = await supabase
+    .from('vocabulary_items')
+    .select(`
+      *,
+      vocabulary_sets!inner(user_id)
+    `)
+    .eq('vocabulary_sets.user_id', user.id)
+    .order('created_at', { ascending: false })
+
+  if (error) throw error
+  return data as VocabularyItem[]
+} 

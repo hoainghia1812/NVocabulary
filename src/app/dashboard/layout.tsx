@@ -3,7 +3,7 @@
 import { ProtectedRoute } from '@/components/ProtectedRoute'
 import { useAuth } from '@/contexts/AuthContext'
 import { Button } from '@/components/ui/button'
-import { BookOpen, Home, Book, BarChart3, LogOut, Search, Bell, User, Menu, X } from 'lucide-react'
+import { BookOpen, Home, Book, BarChart3, LogOut, Search, Bell, User, Menu, X, Headphones } from 'lucide-react'
 import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -28,6 +28,7 @@ export default function DashboardLayout({
     { name: 'Tổng quan', href: '/dashboard', icon: Home },
     { name: 'Bộ từ vựng', href: '/dashboard/study-sets', icon: Book },
     { name: 'Luyện gõ', href: '/dashboard/study', icon: BookOpen },
+    { name: 'Luyện nghe', href: '/dashboard/listening', icon: Headphones },
     { name: 'Tiến độ', href: '/dashboard/progress', icon: BarChart3 },
   ]
 
@@ -84,7 +85,7 @@ export default function DashboardLayout({
           {/* Sidebar Overlay */}
           {sidebarOpen && (
             <div 
-              className="fixed inset-0 bg-black bg-opacity-50 z-40"
+              className="fixed inset-0 backdrop-blur-sm bg-white/20 z-40"
               onClick={() => setSidebarOpen(false)}
             />
           )}

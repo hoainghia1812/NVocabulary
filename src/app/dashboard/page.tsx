@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { Card, CardDescription, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { BookOpen, Brain, Trophy, TrendingUp, Plus, ArrowRight, Clock } from "lucide-react"
+import { BookOpen, Brain, Trophy, TrendingUp, Plus, ArrowRight, Clock, Headphones } from "lucide-react"
 import Link from "next/link"
 import { useAuth } from '@/contexts/AuthContext'
 
@@ -45,7 +45,7 @@ export default function DashboardPage() {
           <Link href="/dashboard/study-sets/new">
             <Button 
               variant="outline" 
-              className="border-2 border-white/60 text-white hover:bg-white/20 hover:border-white/80 backdrop-blur-md w-full sm:w-auto shadow-lg hover:shadow-xl transition-all duration-300 group"
+              className="border-2 border-white bg-white text-sky-600 hover:bg-white/90 hover:border-white backdrop-blur-md w-full sm:w-auto shadow-lg hover:shadow-xl transition-all duration-300 group"
             >
               <Plus className="mr-2 h-4 w-4 group-hover:rotate-90 transition-transform duration-300" />
               Tạo bộ từ vựng mới
@@ -125,7 +125,7 @@ export default function DashboardPage() {
                 </Button>
               </Link>
             </div>
-          </CardHeader>
+            </CardHeader>
           <CardContent className="space-y-4 p-3 sm:p-6 pt-0">
             <div className="text-center py-6 sm:py-8 text-gray-500">
               <BookOpen className="mx-auto h-10 w-10 sm:h-12 sm:w-12 text-sky-300 mb-3 sm:mb-4" />
@@ -138,9 +138,9 @@ export default function DashboardPage() {
                 >
                   <Plus className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
                   Tạo bộ từ vựng đầu tiên
-                </Button>
+                    </Button>
               </Link>
-            </div>
+                  </div>
           </CardContent>
         </Card>
 
@@ -156,10 +156,10 @@ export default function DashboardPage() {
               <Clock className="mx-auto h-10 w-10 sm:h-12 sm:w-12 text-sky-300 mb-3 sm:mb-4" />
               <p className="text-sm text-gray-600">Chưa có hoạt động nào</p>
               <p className="text-xs text-gray-400 mt-1">Bắt đầu học để xem lịch sử hoạt động</p>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+                </div>
+            </CardContent>
+          </Card>
+        </div>
 
       {/* Quick Actions */}
       <Card className="bg-white/80 backdrop-blur-sm border-sky-100 shadow-lg">
@@ -168,14 +168,22 @@ export default function DashboardPage() {
             Hành động nhanh
           </CardTitle>
           <CardDescription className="text-sm text-gray-600">Quay lại hành trình học tập của bạn</CardDescription>
-        </CardHeader>
+            </CardHeader>
         <CardContent className="p-3 sm:p-6 pt-0">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
             <Link href="/dashboard/study">
               <div className="p-3 sm:p-4 border border-sky-100 bg-gradient-to-br from-sky-50 to-cyan-50 rounded-lg hover:border-sky-200 hover:shadow-md transition-all duration-200 cursor-pointer">
                 <Brain className="h-6 w-6 sm:h-8 sm:w-8 text-sky-600 mb-2 sm:mb-3" />
-                <h3 className="font-medium mb-1 text-sm sm:text-base text-gray-800">Tiếp tục học</h3>
-                <p className="text-xs sm:text-sm text-gray-600">Học từ chỗ bạn dừng lại</p>
+                <h3 className="font-medium mb-1 text-sm sm:text-base text-gray-800">Luyện gõ</h3>
+                <p className="text-xs sm:text-sm text-gray-600">Cải thiện tốc độ đánh máy</p>
+              </div>
+            </Link>
+
+            <Link href="/dashboard/listening">
+              <div className="p-3 sm:p-4 border border-orange-100 bg-gradient-to-br from-orange-50 to-amber-50 rounded-lg hover:border-orange-200 hover:shadow-md transition-all duration-200 cursor-pointer">
+                <Headphones className="h-6 w-6 sm:h-8 sm:w-8 text-orange-600 mb-2 sm:mb-3" />
+                <h3 className="font-medium mb-1 text-sm sm:text-base text-gray-800">Luyện nghe</h3>
+                <p className="text-xs sm:text-sm text-gray-600">Cải thiện khả năng nghe</p>
               </div>
             </Link>
 
@@ -184,7 +192,7 @@ export default function DashboardPage() {
                 <Plus className="h-6 w-6 sm:h-8 sm:w-8 text-emerald-600 mb-2 sm:mb-3" />
                 <h3 className="font-medium mb-1 text-sm sm:text-base text-gray-800">Tạo bộ từ vựng</h3>
                 <p className="text-xs sm:text-sm text-gray-600">Xây dựng bộ từ vựng riêng</p>
-              </div>
+                  </div>
             </Link>
 
             <Link href="/dashboard/progress">
@@ -192,11 +200,11 @@ export default function DashboardPage() {
                 <TrendingUp className="h-6 w-6 sm:h-8 sm:w-8 text-purple-600 mb-2 sm:mb-3" />
                 <h3 className="font-medium mb-1 text-sm sm:text-base text-gray-800">Xem tiến độ</h3>
                 <p className="text-xs sm:text-sm text-gray-600">Theo dõi hành trình học tập</p>
-              </div>
+                  </div>
             </Link>
-          </div>
-        </CardContent>
-      </Card>
+                </div>
+            </CardContent>
+          </Card>
     </div>
   )
 } 
