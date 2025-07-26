@@ -46,15 +46,15 @@ const studyMethods = [
     hoverColor: 'hover:from-amber-600 hover:to-orange-600',
     recommended: false
   },
-  {
-    id: 'spell',
-    title: 'Chính tả',
-    description: 'Luyện tập viết chính xác từ vựng',
-    icon: PenTool,
-    color: 'bg-gradient-to-br from-pink-500 to-rose-500',
-    hoverColor: 'hover:from-pink-600 hover:to-rose-600',
-    recommended: false
-  },
+  // {
+  //   id: 'spell',
+  //   title: 'Chính tả',
+  //   description: 'Luyện tập viết chính xác từ vựng',
+  //   icon: PenTool,
+  //   color: 'bg-gradient-to-br from-pink-500 to-rose-500',
+  //   hoverColor: 'hover:from-pink-600 hover:to-rose-600',
+  //   recommended: false
+  // },
   {
     id: 'comprehensive',
     title: 'Tổng hợp',
